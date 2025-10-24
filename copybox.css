@@ -45,3 +45,33 @@
   .copy-btn { top: 8px; right: 8px; font-size: 15px; padding: 8px 14px; }
   .code-box pre { max-height: 300px; }
 }
+
+/* ===== Scrollbar Styling for Code Box ===== */
+
+/* Hide scrollbar by default, show on hover or while scrolling */
+.code-box pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent; /* Invisible track */
+}
+
+/* Hide completely by default */
+.code-box pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+
+/* Show only when hovering */
+.code-box pre:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox support */
+.code-box pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent; /* hides scrollbar until hover */
+}
+
+.code-box pre:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
