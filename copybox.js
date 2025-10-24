@@ -1,3 +1,6 @@
+window.copyBoxLoaded = true;
+console.log("✅ copybox.js loaded from GitHub");
+
 document.addEventListener("DOMContentLoaded", function() {
   document.querySelectorAll(".code-box").forEach(box => {
     const button = document.createElement("button");
