@@ -1,0 +1,47 @@
+/* === Squarespace Code Box Styling === */
+.code-box {
+  position: relative;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.code-box pre {
+  margin: 0;
+  font-family: monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 50px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s ease;
+}
+.copy-btn:hover { background: rgba(0,0,0,1); }
+.copy-btn .material-icons { font-size: 16px; }
+
+@media screen and (max-width: 600px) {
+  .copy-btn { top: 8px; right: 8px; font-size: 15px; padding: 8px 14px; }
+  .code-box pre { max-height: 300px; }
+}
