@@ -1,4 +1,3 @@
-<script>
 document.addEventListener("DOMContentLoaded", function () {
   /* ------------------ BLOG FILTER BUTTONS ------------------ */
   const filterContainer = document.getElementById("filter-buttons-1");
@@ -131,4 +130,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-</script>
