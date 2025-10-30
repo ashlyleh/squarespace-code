@@ -75,3 +75,7 @@
 .code-box pre:hover {
   scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
+
+.copy-btn {
+width: 250px;
+}
