@@ -7,21 +7,31 @@ function rgbToHex(rgb) {
   }).join("");
 }
 
+// Determine if text should be light or dark for contrast
+function getContrastingTextColor(rgb) {
+  const rgbArray = rgb.match(/\d+/g).map(Number);
+  const luminance = (0.299 * rgbArray[0] + 0.587 * rgbArray[1] + 0.114 * rgbArray[2]) / 255;
+  return luminance > 0.5 ? '#000' : '#fff';
+}
+
 function renderColorSwatches() {
   document.querySelectorAll('.website-color-palette').forEach(swatch => {
     const varName = swatch.getAttribute('data-color');
     if (!varName) return;
 
-    // Try resolving the CSS variable from the swatch element
+    // Get variable from this element or inherited style
     const colorValue = getComputedStyle(swatch).getPropertyValue(varName).trim();
-
+    
     if (colorValue) {
       swatch.style.backgroundColor = colorValue;
-
       const resolvedColor = getComputedStyle(swatch).backgroundColor;
-      const hex = rgbToHex(resolvedColor);
-      const hexElement = swatch.querySelector('.hex');
 
+      const hex = rgbToHex(resolvedColor);
+      const textColor = getContrastingTextColor(resolvedColor);
+
+      swatch.style.color = textColor;
+
+      const hexElement = swatch.querySelector('.hex');
       if (hexElement) {
         hexElement.textContent = hex || 'Invalid Color';
       }
