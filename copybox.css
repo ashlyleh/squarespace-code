@@ -42,7 +42,12 @@
 .copy-btn .material-icons { font-size: 16px; }
 
 @media screen and (max-width: 600px) {
-  .copy-btn { top: 8px; right: 8px; font-size: 15px; padding: 8px 14px; }
+  .copy-btn {         
+        top: 8px;
+        right: 8px;
+        width: auto;
+        font-size: 15px;
+        padding: 8px 14px;}
   .code-box pre { max-height: 300px; }
 }
 
@@ -74,8 +79,4 @@
 
 .code-box pre:hover {
   scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
-}
-
-.copy-btn {
-width: 250px;
 }
