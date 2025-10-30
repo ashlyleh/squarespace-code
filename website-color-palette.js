@@ -1,47 +1,35 @@
-function rgbToHex(rgb) {
-  const rgbArray = rgb.match(/\d+/g);
-  if (!rgbArray) return null;
-  return "#" + rgbArray.map(x => {
-    const hex = parseInt(x).toString(16);
-    return hex.length === 1 ? "0" + hex : hex;
-  }).join("");
-}
+<script>
+  // 👇 YOUR HEX COLORS: Put them in the same order as your HTML blocks
+  const hexColors = [
+    "#fffdfc",  // Background
+    "#ffe8d6",  // Secondary Background
+    "#d97b4c",  // Primary Accent
+    "#b45430",  // Secondary Accent
+    "#0a0a0a"   // Body Text
+  ];
 
-// Determine if text should be light or dark for contrast
-function getContrastingTextColor(rgb) {
-  const rgbArray = rgb.match(/\d+/g).map(Number);
-  const luminance = (0.299 * rgbArray[0] + 0.587 * rgbArray[1] + 0.114 * rgbArray[2]) / 255;
-  return luminance > 0.5 ? '#000' : '#fff';
-}
+  function getContrastingTextColor(hex) {
+    const r = parseInt(hex.substr(1, 2), 16);
+    const g = parseInt(hex.substr(3, 2), 16);
+    const b = parseInt(hex.substr(5, 2), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.5 ? '#000' : '#fff';
+  }
 
-function renderColorSwatches() {
-  document.querySelectorAll('.website-color-palette').forEach(swatch => {
-    const varName = swatch.getAttribute('data-color');
-    if (!varName) return;
+  function renderHexSwatches() {
+    const swatches = document.querySelectorAll('.website-color-palette');
 
-    // Get variable from this element or inherited style
-    const colorValue = getComputedStyle(swatch).getPropertyValue(varName).trim();
-    
-    if (colorValue) {
-      swatch.style.backgroundColor = colorValue;
-      const resolvedColor = getComputedStyle(swatch).backgroundColor;
-
-      const hex = rgbToHex(resolvedColor);
-      const textColor = getContrastingTextColor(resolvedColor);
-
-      swatch.style.color = textColor;
+    swatches.forEach((swatch, index) => {
+      const hex = hexColors[index] || '#ccc';
+      swatch.style.backgroundColor = hex;
+      swatch.style.color = getContrastingTextColor(hex);
 
       const hexElement = swatch.querySelector('.hex');
       if (hexElement) {
-        hexElement.textContent = hex || 'Invalid Color';
+        hexElement.textContent = hex;
       }
-    } else {
-      const hexElement = swatch.querySelector('.hex');
-      if (hexElement) {
-        hexElement.textContent = 'Unavailable';
-      }
-    }
-  });
-}
+    });
+  }
 
-document.addEventListener("DOMContentLoaded", renderColorSwatches);
+  document.addEventListener("DOMContentLoaded", renderHexSwatches);
+</script>
