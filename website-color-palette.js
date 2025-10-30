@@ -12,14 +12,16 @@ function renderColorSwatches() {
     const varName = swatch.getAttribute('data-color');
     if (!varName) return;
 
-    // Use the swatch itself to resolve the CSS variable
+    // Try resolving the CSS variable from the swatch element
     const colorValue = getComputedStyle(swatch).getPropertyValue(varName).trim();
-    
+
     if (colorValue) {
       swatch.style.backgroundColor = colorValue;
+
       const resolvedColor = getComputedStyle(swatch).backgroundColor;
       const hex = rgbToHex(resolvedColor);
       const hexElement = swatch.querySelector('.hex');
+
       if (hexElement) {
         hexElement.textContent = hex || 'Invalid Color';
       }
