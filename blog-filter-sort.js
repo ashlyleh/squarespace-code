@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   /* ------------------ BLOG FILTER BUTTONS ------------------ */
   const filterContainer = document.getElementById("filter-buttons-1");
-  const blogGrid = document.querySelector(".blog-basic-grid");
+  const blogGrid = document.querySelector(".blog-basic-grid, .blog-alternating-side-by-side");
   const blogItems = Array.from(blogGrid ? blogGrid.querySelectorAll(".blog-item") : []);
   const activeFilters = new Set();
 
@@ -84,11 +84,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const icon = dropdown.querySelector(".dropdown-icon");
   const label = dropdown.querySelector(".dropdown-label");
   const options = dropdown.querySelector(".dropdown-options");
-  const container = document.querySelector(".blog-basic-grid");
+  const container = document.querySelector(".blog-basic-grid, .blog-alternating-side-by-side");
 
   if (trigger && icon && label && options && container && blogItems.length) {
     // Open/close dropdown menu
-    trigger.addEventListener("click", () => {
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
       const open = options.style.display === "block";
       options.style.display = open ? "none" : "block";
       icon.textContent = open ? "keyboard_arrow_down" : "keyboard_arrow_up";
@@ -116,13 +117,37 @@ document.addEventListener("DOMContentLoaded", function () {
         let sorted = [...blogItems];
 
         if (sort === "newest") {
-          sorted.sort((a, b) => new Date(b.querySelector(".blog-date").innerText) - new Date(a.querySelector(".blog-date").innerText));
+          sorted.sort((a, b) => {
+            const dateA = new Date(a.querySelector(".blog-date time")?.getAttribute("datetime") || 
+                                   a.querySelector(".blog-date")?.innerText || '');
+            const dateB = new Date(b.querySelector(".blog-date time")?.getAttribute("datetime") || 
+                                   b.querySelector(".blog-date")?.innerText || '');
+            return dateB - dateA;
+          });
         } else if (sort === "oldest") {
-          sorted.sort((a, b) => new Date(a.querySelector(".blog-date").innerText) - new Date(b.querySelector(".blog-date").innerText));
+          sorted.sort((a, b) => {
+            const dateA = new Date(a.querySelector(".blog-date time")?.getAttribute("datetime") || 
+                                   a.querySelector(".blog-date")?.innerText || '');
+            const dateB = new Date(b.querySelector(".blog-date time")?.getAttribute("datetime") || 
+                                   b.querySelector(".blog-date")?.innerText || '');
+            return dateA - dateB;
+          });
         } else if (sort === "az") {
-          sorted.sort((a, b) => a.querySelector(".blog-title").innerText.localeCompare(b.querySelector(".blog-title").innerText));
+          sorted.sort((a, b) => {
+            const titleA = (a.querySelector(".blog-title a")?.innerText || 
+                           a.querySelector(".blog-title")?.innerText || '').trim();
+            const titleB = (b.querySelector(".blog-title a")?.innerText || 
+                           b.querySelector(".blog-title")?.innerText || '').trim();
+            return titleA.localeCompare(titleB);
+          });
         } else if (sort === "za") {
-          sorted.sort((a, b) => b.querySelector(".blog-title").innerText.localeCompare(a.querySelector(".blog-title").innerText));
+          sorted.sort((a, b) => {
+            const titleA = (a.querySelector(".blog-title a")?.innerText || 
+                           a.querySelector(".blog-title")?.innerText || '').trim();
+            const titleB = (b.querySelector(".blog-title a")?.innerText || 
+                           b.querySelector(".blog-title")?.innerText || '').trim();
+            return titleB.localeCompare(titleA);
+          });
         }
 
         sorted.forEach(item => container.appendChild(item));
