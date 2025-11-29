@@ -125,7 +125,7 @@ function initWebsitePalette() {
       return;
     }
     
-    // Get the CSS variable value from the root or computed style
+    // Get the CSS variable value from :root
     const cssVarValue = getComputedStyle(document.documentElement)
       .getPropertyValue(varName)
       .trim();
@@ -139,7 +139,7 @@ function initWebsitePalette() {
     if (cssVarValue.startsWith('#')) {
       hexElement.textContent = cssVarValue.toUpperCase();
     } 
-    // If it's an RGB color, convert it
+    // If it's an RGB color, convert it to hex
     else if (cssVarValue.startsWith('rgb')) {
       const hexColor = rgbToHex(cssVarValue);
       hexElement.textContent = hexColor;
