@@ -103,37 +103,54 @@
     console.log('Color Swatches: brand-color-palette initialized successfully');
   }
 
-  /**
-   * Initializes website color palette from CSS variables
-   */
-  function initWebsitePalette() {
-    const palette = document.querySelector('.website-color-palette');
+/**
+ * Initializes website color palette from CSS variables
+ */
+function initWebsitePalette() {
+  const palette = document.querySelector('.website-color-palette');
+  
+  if (!palette) {
+    console.log('Color Swatches: No website-color-palette found');
+    return;
+  }
+  
+  const swatches = palette.querySelectorAll('.color-swatch[data-var]');
+  
+  swatches.forEach(function(swatch) {
+    const hexElement = swatch.querySelector('.hex');
+    const varName = swatch.getAttribute('data-var');
     
-    if (!palette) {
-      console.log('Color Swatches: No website-color-palette found');
+    if (!hexElement || !varName) {
+      console.warn('Color Swatches: Missing .hex element or data-var attribute');
       return;
     }
     
-    const swatches = palette.querySelectorAll('.color-swatch');
+    // Get the CSS variable value from the root or computed style
+    const cssVarValue = getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim();
     
-    swatches.forEach(function(swatch) {
-      const hexElement = swatch.querySelector('.hex');
-      
-      if (!hexElement) {
-        console.warn('Color Swatches: No .hex element found in swatch');
-        return;
-      }
-      
-      // Get the computed background color
-      const bgColor = window.getComputedStyle(swatch).backgroundColor;
-      
-      // Convert to hex and display
-      const hexColor = rgbToHex(bgColor);
+    if (!cssVarValue) {
+      console.warn('Color Swatches: CSS variable not found:', varName);
+      return;
+    }
+    
+    // If it's already a hex color, use it directly
+    if (cssVarValue.startsWith('#')) {
+      hexElement.textContent = cssVarValue.toUpperCase();
+    } 
+    // If it's an RGB color, convert it
+    else if (cssVarValue.startsWith('rgb')) {
+      const hexColor = rgbToHex(cssVarValue);
       hexElement.textContent = hexColor;
-    });
-    
-    console.log('Color Swatches: website-color-palette initialized successfully');
-  }
+    }
+    else {
+      console.warn('Color Swatches: Unsupported color format:', cssVarValue);
+    }
+  });
+  
+  console.log('Color Swatches: website-color-palette initialized successfully');
+}
 
   /**
    * Initializes all color palettes
