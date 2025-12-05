@@ -15,13 +15,41 @@
     topAnchor.id = 'top';
     document.body.insertBefore(topAnchor, document.body.firstChild);
     
-    // Create back to top button HTML with text label
-    const buttonHTML = `
-      <a id="back-to-top" href="#top">
-        <span>To Top</span>
-        <span class="material-symbols-outlined">arrow_upward</span>
-      </a>
-    `;
+    // Check if page uses centered pill style or default circle style
+    const style = document.createElement('style');
+    style.textContent = '.back-to-top-style-check { border-radius: 50px; }';
+    document.head.appendChild(style);
+    
+    const testEl = document.createElement('div');
+    testEl.className = 'back-to-top-style-check';
+    testEl.style.cssText = 'position: absolute; visibility: hidden;';
+    document.body.appendChild(testEl);
+    
+    const computedStyle = window.getComputedStyle(testEl);
+    const isCentered = computedStyle.borderRadius === '50px';
+    
+    document.body.removeChild(testEl);
+    document.head.removeChild(style);
+    
+    // Create appropriate button HTML
+    let buttonHTML;
+    if (isCentered) {
+      // Centered pill style with text
+      buttonHTML = `
+        <a id="back-to-top" href="#top">
+          <span>To Top</span>
+          <span class="material-symbols-outlined">arrow_upward</span>
+        </a>
+      `;
+    } else {
+      // Default circle style, icon only
+      buttonHTML = `
+        <a id="back-to-top" href="#top">
+          <span class="material-symbols-outlined">arrow_upward</span>
+        </a>
+      `;
+    }
+    
     document.body.insertAdjacentHTML('beforeend', buttonHTML);
     
     // Load AOS CSS
