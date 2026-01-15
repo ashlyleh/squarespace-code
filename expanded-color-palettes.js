@@ -5,59 +5,60 @@ document.addEventListener("DOMContentLoaded", () => {
     const hex = swatch.dataset.hex;
     if (!hex) return;
 
-    // Set background color
+    // Apply background color
     swatch.style.backgroundColor = hex;
 
-    // Update HEX display
-    const hexDisplay = swatch.querySelector(".hex");
-    if (hexDisplay) hexDisplay.textContent = hex;
+    // Set HEX
+    const hexSpan = swatch.querySelector(".hex");
+    if (hexSpan) hexSpan.textContent = hex;
 
-    // Convert and update RGB
+    // Convert HEX to RGB
     const rgb = hexToRgb(hex);
-    const rgbDisplay = swatch.querySelector(".rgb");
-    if (rgbDisplay && rgb) {
-      rgbDisplay.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    }
+    if (rgb) {
+      const rgbSpan = swatch.querySelector(".rgb");
+      if (rgbSpan) {
+        rgbSpan.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      }
 
-    // Convert and update CMYK
-    const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
-    const cmykDisplay = swatch.querySelector(".cmyk");
-    if (cmykDisplay && cmyk) {
-      cmykDisplay.textContent = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
+      // Convert RGB to CMYK
+      const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+      const cmykSpan = swatch.querySelector(".cmyk");
+      if (cmykSpan) {
+        cmykSpan.textContent = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
+      }
     }
   });
 });
 
-// HEX ➡️ RGB
 function hexToRgb(hex) {
   hex = hex.replace("#", "");
   if (hex.length === 3) {
     hex = hex.split("").map(c => c + c).join("");
   }
-
-  const bigint = parseInt(hex, 16);
+  const num = parseInt(hex, 16);
   return {
-    r: (bigint >> 16) & 255,
-    g: (bigint >> 8) & 255,
-    b: bigint & 255
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255
   };
 }
 
-// RGB ➡️ CMYK
 function rgbToCmyk(r, g, b) {
   const rP = r / 255;
   const gP = g / 255;
   const bP = b / 255;
 
   const k = 1 - Math.max(rP, gP, bP);
-  const c = k < 1 ? (1 - rP - k) / (1 - k) : 0;
-  const m = k < 1 ? (1 - gP - k) / (1 - k) : 0;
-  const y = k < 1 ? (1 - bP - k) / (1 - k) : 0;
+  if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
+
+  const c = ((1 - rP - k) / (1 - k)) * 100;
+  const m = ((1 - gP - k) / (1 - k)) * 100;
+  const y = ((1 - bP - k) / (1 - k)) * 100;
 
   return {
-    c: Math.round(c * 100),
-    m: Math.round(m * 100),
-    y: Math.round(y * 100),
+    c: Math.round(c),
+    m: Math.round(m),
+    y: Math.round(y),
     k: Math.round(k * 100)
   };
 }
