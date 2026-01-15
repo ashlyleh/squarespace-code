@@ -5,33 +5,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const hex = swatch.dataset.hex;
     if (!hex) return;
 
-    // Set background color
+    // Apply background color
     swatch.style.backgroundColor = hex;
 
     // Convert HEX to RGB
     const rgb = hexToRgb(hex);
     if (!rgb) return;
 
-    // Set text color for contrast
+    // Auto text color contrast
     const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
     swatch.style.color = brightness < 128 ? "#ffffff" : "#000000";
 
-    // Update HEX
+    // Insert just the values (labels are in HTML)
     const hexSpan = swatch.querySelector(".hex");
-    if (hexSpan) hexSpan.textContent = `HEX: ${hex.toUpperCase()}`;
+    if (hexSpan) hexSpan.textContent = hex.toUpperCase();
 
-    // Update RGB
     const rgbSpan = swatch.querySelector(".rgb");
-    if (rgbSpan) {
-      rgbSpan.textContent = `RGB: ${rgb.r}, ${rgb.g}, ${rgb.b}`;
-    }
+    if (rgbSpan) rgbSpan.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
 
-    // Update CMYK
     const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
     const cmykSpan = swatch.querySelector(".cmyk");
-    if (cmykSpan) {
-      cmykSpan.textContent = `CMYK: ${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}`;
-    }
+    if (cmykSpan) cmykSpan.textContent = `${cmyk.c}, ${cmyk.m}, ${cmyk.y}, ${cmyk.k}`;
   });
 });
 
