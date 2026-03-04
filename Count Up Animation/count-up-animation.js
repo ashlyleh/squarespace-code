@@ -1,4 +1,3 @@
-<script>
   function countUp(el) {
     const target = +el.dataset.count;
     const suffix = el.dataset.suffix || '';
@@ -27,4 +26,3 @@
   }, { threshold: 0.5 });
 
   document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
-</script>
