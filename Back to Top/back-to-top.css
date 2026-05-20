@@ -1,0 +1,152 @@
+/* ═════════════════════════════════════
+🟧  BACK TO TOP BUTTON  🟧
+══════════════════════════════════════ */
+
+/* ||  DEFAULT CONFIG */
+
+/* Base custom properties — override per site in #back-to-top {} */
+:root {
+  --btt-aria-label: "Back to top";
+  --btt-icon: "arrow_upward";
+  --btt-icon-variant: "outlined";  /* outlined | rounded | sharp */
+  --btt-label: "Back to top";
+  --btt-position: right;           /* left | center | right */
+  --btt-show-label: 0;             /* 0 = icon only, 1 = icon + label */
+}
+
+/* ||  BUTTON BASE */
+
+/* Button Wrapper */
+#back-to-top {
+  align-items: center;
+  background: var(--secondary-background);
+  border-radius: 50%;
+  bottom: 50px;
+  box-shadow: var(--shadow);
+  display: flex;
+  height: 48px;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  transition: var(--transition);
+  width: 48px;
+  z-index: 1000;
+}
+
+/* Button Wrapper - Visible */
+#back-to-top.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Button Wrapper - Hover */
+#back-to-top:hover {
+  background: var(--secondary-accent);
+}
+
+/* Button Link */
+#back-to-top a {
+  align-items: center;
+  display: flex;
+  gap: 0.375rem;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* ||  POSITIONING */
+
+/* Button - Left Aligned */
+#back-to-top.btt-left {
+  left: 50px;
+  right: auto;
+}
+
+/* Button - Center Aligned */
+#back-to-top.btt-center {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+/* Button - Center Aligned - Hover */
+#back-to-top.btt-center:hover {
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Button - Right Aligned */
+#back-to-top.btt-right {
+  left: auto;
+  right: 50px;
+}
+
+/* ||  ICON */
+
+/* Material Symbol Base */
+#back-to-top [class^="material-symbols"] {
+  color: var(--secondary-accent);
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Material Symbol - Hover */
+#back-to-top:hover [class^="material-symbols"] {
+  color: var(--background-color);
+}
+
+/* ||  TEXT LABEL */
+
+/* Label Text */
+#back-to-top .btt-label {
+  color: var(--secondary-accent);
+  display: none; /* Hidden when --btt-show-label is 0 */
+  font-family: var(--paragraph);
+  font-size: var(--paragraph-3);
+  font-weight: var(--medium);
+  letter-spacing: var(--spacing);
+  line-height: 1;
+  text-transform: var(--transform);
+  white-space: nowrap;
+}
+
+/* Label Text - Hover */
+#back-to-top:hover .btt-label {
+  color: var(--background-color);
+}
+
+/* ||  LABEL + ICON VARIANT */
+
+/*
+  When --btt-show-label is 1, the JS injects .btt-label into the DOM.
+  Switch to pill shape and reveal the label. Override per site:
+
+  #back-to-top {
+    --btt-show-label: 1;
+    --btt-label: "Return to top";
+    border-radius: 100px;
+    height: auto;
+    padding: 0.75rem 1.25rem;
+    width: auto;
+  }
+*/
+
+/* Button - Has Label */
+#back-to-top:has(.btt-label) {
+  border-radius: 100px;
+  height: auto;
+  padding: 0.625rem 1.125rem;
+  width: auto;
+}
+
+/* Label - Visible When Present */
+#back-to-top:has(.btt-label) .btt-label {
+  display: inline;
+}
+
+/* ||  HOVER LIFT */
+
+/* Button - Hover Lift (non-center) */
+#back-to-top.btt-left:hover,
+#back-to-top.btt-right:hover {
+  transform: translateY(-2px);
+}
