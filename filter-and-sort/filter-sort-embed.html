@@ -1,79 +1,98 @@
 <!------------------------------------------------------------------------
-  filter-sort — PAGE EMBED SNIPPETS
-  Place in: Squarespace → Pages → [Page] → Page Header Code Injection
-  Or in: Settings → Advanced → Code Injection → Footer (site-wide)
+  filter-sort v2.0 — PAGE EMBED SNIPPETS
+  Place in: Pages → [Page] → ⚙️ → Advanced → Page Header Code Injection
 
-  INSTRUCTIONS:
+  INSTRUCTIONS
   1. Copy the relevant snippet (blog OR events) for each page.
-  2. Adjust window.filterSortConfig values as needed per page.
-  3. The <script src="..."> line loads the unified JS from jsDelivr.
-     Update the @version tag after each GitHub push, e.g. @v1.1, @main.
+  2. Adjust window.filterSortConfig values as needed.
+  3. The <script src> loads the script from jsDelivr CDN.
+     After pushing to GitHub, bust cache by changing @main to a commit hash.
 -------------------------------------------------------------------------
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   BLOG PAGE EMBED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Place this in the blog page's header code injection.
-The filter buttons div and sort dropdown div must exist in your
-page layout as Code Blocks with matching IDs.
+Add a single Code Block to your blog page with this HTML:
+  <div id="blog-filter-app"></div>
+
+Then paste the config + script in the page's header code injection.
 -->
 
 <script>
 window.filterSortConfig = {
-  /* ── Blog ───────────────────────────────────── */
-  blogGridSelector:  '.blog-basic-grid',   /* or '.blog-alternating-side-by-side' */
-  blogItemSelector:  '.blog-item',
-  filterContainerId: 'filter-buttons-1',
-  sortDropdownId:    'sort-dropdown-1',
-  allPostsLabel:     'All Posts',
+  /* ── Required ───────────────────────────────────── */
+  blogMountId:  'blog-filter-app',   /* matches your Code Block ID    */
+  blogUrl:      '/blog',             /* your blog page URL            */
 
-  /* ── Archive ────────────────────────────────── */
-  archiveAllLabel:   '‹ See All',
-  archivePosition:   'bottom',             /* 'top' or 'bottom' */
+  /* ── Layout ─────────────────────────────────────── */
+  /* Options: 'basic-grid' | 'masonry' | 'single-column' | 'side-by-side' | 'alternating' */
+  blogLayout:   'basic-grid',
+  blogNewsroom: false,               /* true = large hero first card  */
+
+  /* ── Filters (set false to hide) ────────────────── */
+  blogShowSearch:   true,
+  blogShowCategory: true,
+  blogShowTag:      true,
+  blogShowAuthor:   true,
+  blogShowYear:     true,
+  blogShowSort:     true,
+
+  /* ── Labels ──────────────────────────────────────── */
+  blogLabelCategory: 'Categories',
+  blogLabelTag:      'Tags',
+  blogLabelAuthor:   'Authors',
+  blogLabelYear:     'Date',
+  blogResetLabel:    'Reset',
+  blogReadMore:      'Read more',
+  blogLoadMore:      'Load more',
+  blogNoResults:     'No posts match your filters.',
+
+  /* ── Archive ─────────────────────────────────────── */
+  archiveAllLabel:  '‹ See All',
+  archivePosition:  'bottom',        /* 'top' or 'bottom'             */
 };
 </script>
 
-<!------------ 📋 Blog Filter & Sort ------------>
-<script src="https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/filter-sort.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/filter-and-sort/filter-sort.js"></script>
 
 
 <!--
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   EVENTS PAGE EMBED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Add a Code Block to your events page ABOVE the Squarespace
-   events block. Give it the ID matching eventsContainerId below.
-   Example Code Block HTML:
-     <div id="evt-filter-app"></div>
+Add a single Code Block ABOVE your events block with this HTML:
+  <div id="evt-filter-app"></div>
 
-2. Paste this snippet in the events page header code injection.
+Then paste the config + script in the page's header code injection.
 -->
 
 <script>
 window.filterSortConfig = {
-  /* ── Events ─────────────────────────────────── */
+  /* ── Required ───────────────────────────────────── */
   eventsContainerId: 'evt-filter-app',
-  upcomingLabel:     'Upcoming',
-  pastLabel:         'Past',
-  eventCountLabel:   'events',
-  resetLabel:        'Reset',
-  noResultsTitle:    'No events match these filters.',
-  noResultsSub:      'Try adjusting your filters.',
-  viewEventLabel:    'View Event',
 
-  /* Toggle filters on/off per page */
-  showLocation:      true,
-  showDate:          true,
-  showCategory:      true,
-  showTag:           true,
-  showEventCount:    true,
-  showReset:         true,
+  /* ── Filters (set false to hide) ────────────────── */
+  eventsShowSearch: true,
+  showLocation:     true,
+  showDate:         true,
+  showCategory:     true,
+  showTag:          true,
+  showEventCount:   true,
+  showReset:        true,
 
-  /* Date/time format */
-  use24Hour:         false,
+  /* ── Labels ──────────────────────────────────────── */
+  upcomingLabel:  'Upcoming',
+  pastLabel:      'Past',
+  eventCountLabel:'events',
+  resetLabel:     'Reset',
+  noResultsTitle: 'No events match these filters.',
+  noResultsSub:   'Try adjusting your filters.',
+  viewEventLabel: 'View Event',
+
+  /* ── Date/time format ───────────────────────────── */
+  use24Hour: false,
 };
 </script>
 
-<!------------ 📅 Events Filter ------------>
-<script src="https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/filter-sort.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/filter-and-sort/filter-sort.js"></script>
