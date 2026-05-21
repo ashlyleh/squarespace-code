@@ -1,5 +1,5 @@
 /*!
- * filter-sort.js  v2.1
+ * filter-sort.js  v2.2
  * Unified blog filter + events filter for Squarespace 7.1 (Fluid Engine)
  * https://github.com/ashlyleh/squarespace-code
  *
@@ -93,6 +93,21 @@
     blogNoResults:     'No posts match your filters.',
     blogReadMore:      'Read more',
     blogLoadMore:      'Load more',
+    /* Blog layout */
+    blogColumns:       3,              /* columns for grid/masonry */
+    blogGap:           '24px',         /* gap between cards */
+    /* Blog meta — per-field position:
+       'above-title' | 'below-title' | 'below-excerpt' | 'below-read-more' | 'on-image' | false */
+    blogShowReadTime:  true,
+    blogReadTimePos:   'above-title',
+    blogShowDate:      true,
+    blogDatePos:       'above-title',
+    blogShowAuthorMeta:true,
+    blogAuthorPos:     'below-read-more',
+    blogShowCatBadge:  true,
+    blogCatBadgePos:   'on-image',
+    blogShowTagMeta:   false,
+    blogTagPos:        'below-read-more',
     /* Archive */
     archiveAllLabel:   '‹ See All',
     archivePosition:   'bottom',
@@ -285,9 +300,13 @@
 
     /* ── Normalise a raw post object ── */
     function normalisePost(p) {
-      var excerpt = stripHtml(p.excerpt || '');
-      var year    = p.publishOn ? String(new Date(p.publishOn).getFullYear()) : '';
-      var thumb   = p.assetUrl || p.thumbnailUrl || '';
+      var excerpt   = stripHtml(p.excerpt || '');
+      var year      = p.publishOn ? String(new Date(p.publishOn).getFullYear()) : '';
+      var thumb     = p.assetUrl || p.thumbnailUrl || '';
+      /* Read time: strip body HTML, count words, divide by 200 wpm */
+      var bodyText  = stripHtml(p.body || '');
+      var wordCount = bodyText.split(/\s+/).filter(Boolean).length;
+      var readTime  = Math.max(1, Math.round(wordCount / 200));
       return {
         id:         p.id || p.urlId || '',
         title:      stripHtml(p.title || ''),
@@ -299,6 +318,7 @@
         fullUrl:    p.fullUrl || '#',
         thumbnail:  thumb,
         year:       year,
+        readTime:   readTime,
         focal:      p.mediaFocalPoint
           ? (p.mediaFocalPoint.x * 100) + '% ' + (p.mediaFocalPoint.y * 100) + '%'
           : 'center',
@@ -327,9 +347,10 @@
 
     /* ── Build bar HTML shell ── */
     function buildBlogShell() {
+      var gridStyle = '--fs-blog-cols:' + cfg.blogColumns + ';--fs-blog-gap:' + cfg.blogGap + ';';
       return (
         '<div class="fs-blog-bar"></div>' +
-        '<div class="fs-blog-grid" data-layout="' + esc(cfg.blogLayout) + '" data-newsroom="' + (cfg.blogNewsroom ? '1' : '0') + '"></div>' +
+        '<div class="fs-blog-grid" data-layout="' + esc(cfg.blogLayout) + '" data-newsroom="' + (cfg.blogNewsroom ? '1' : '0') + '" style="' + gridStyle + '"></div>' +
         '<div class="fs-blog-no-results" style="display:none;">' + esc(cfg.blogNoResults) + '</div>' +
         '<button type="button" class="fs-blog-load-more" style="display:none;">' + esc(cfg.blogLoadMore) + '</button>'
       );
@@ -359,14 +380,22 @@
         html += buildMultiDropdown(f.key, f.label, f.items);
       });
 
-      /* Sort */
+      /* Sort — custom dropdown matching filter dropdowns */
       if (cfg.blogShowSort) {
-        html += '<select class="fs-bar-sort" aria-label="Sort posts">' +
-          '<option value="newest">Newest first</option>' +
-          '<option value="oldest">Oldest first</option>' +
-          '<option value="az">A \u2013 Z</option>' +
-          '<option value="za">Z \u2013 A</option>' +
-          '</select>';
+        html += (
+          '<div class="fs-dropdown fs-blog-dd fs-blog-sort-dd" data-key="sort">' +
+            '<button type="button" class="fs-dd-trigger">' +
+              '<span class="fs-dd-label">Newest first</span>' +
+              CHEVRON +
+            '</button>' +
+            '<ul class="fs-dd-panel">' +
+              '<li class="fs-dd-opt fs-dd-opt--active" data-value="newest">Newest first</li>' +
+              '<li class="fs-dd-opt" data-value="oldest">Oldest first</li>' +
+              '<li class="fs-dd-opt" data-value="az">A \u2013 Z</li>' +
+              '<li class="fs-dd-opt" data-value="za">Z \u2013 A</li>' +
+            '</ul>' +
+          '</div>'
+        );
       }
 
       /* Reset */
@@ -442,12 +471,20 @@
         });
       });
 
-      /* Sort */
-      var sortEl = qs('.fs-bar-sort', bar);
-      if (sortEl) {
-        sortEl.addEventListener('change', function () {
-          state.sort = sortEl.value;
-          applyFilters();
+      /* Sort — wired as a single-select custom dropdown */
+      var sortDd = qs('.fs-blog-sort-dd', bar);
+      if (sortDd) {
+        var sortLabel = qs('.fs-dd-label', sortDd);
+        qsa('.fs-dd-opt', sortDd).forEach(function (opt) {
+          opt.addEventListener('click', function (e) {
+            e.stopPropagation();
+            state.sort = opt.dataset.value;
+            sortLabel.textContent = opt.textContent;
+            qsa('.fs-dd-opt', sortDd).forEach(function (o) { o.classList.remove('fs-dd-opt--active'); });
+            opt.classList.add('fs-dd-opt--active');
+            sortDd.classList.remove('fs-dd--open');
+            applyFilters();
+          });
         });
       }
 
@@ -460,23 +497,28 @@
           state.tags       = new Set();
           state.authors    = new Set();
           state.years      = new Set();
+          state.sort       = 'newest';
           if (searchEl) searchEl.value = '';
-          if (sortEl)   sortEl.value   = 'newest';
-          state.sort = 'newest';
+          /* Reset filter dropdowns */
           qsa('.fs-dd-opt--active', bar).forEach(function (o) { o.classList.remove('fs-dd-opt--active'); });
           qsa('.fs-dd-label', bar).forEach(function (l) {
             var dd = l.closest('.fs-blog-dd');
-            if (dd) {
-              var key = dd.dataset.key;
-              var labels = {
-                categories: cfg.blogLabelCategory,
-                tags:       cfg.blogLabelTag,
-                authors:    cfg.blogLabelAuthor,
-                years:      cfg.blogLabelYear,
-              };
-              l.textContent = labels[key] || l.textContent;
-            }
+            if (!dd) return;
+            var key = dd.dataset.key;
+            var labels = {
+              categories: cfg.blogLabelCategory,
+              tags:       cfg.blogLabelTag,
+              authors:    cfg.blogLabelAuthor,
+              years:      cfg.blogLabelYear,
+              sort:       'Newest first',
+            };
+            l.textContent = labels[key] || l.textContent;
           });
+          /* Re-mark newest as active in sort dropdown */
+          if (sortDd) {
+            var newestOpt = qs('[data-value="newest"]', sortDd);
+            if (newestOpt) newestOpt.classList.add('fs-dd-opt--active');
+          }
           updateResetState(bar);
           applyFilters();
         });
@@ -550,7 +592,7 @@
     function buildBlogCard(p) {
       var layout   = cfg.blogLayout;
       var newsroom = cfg.blogNewsroom;
-      var isFirst  = rendered === 0; /* hero slot */
+      var isFirst  = rendered === 0;
 
       var card = document.createElement('article');
       card.className = 'fs-blog-card fs-blog-card--' + layout + (newsroom && isFirst ? ' fs-blog-card--hero' : '');
@@ -563,23 +605,52 @@
         ? new Date(p.publishOn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         : '';
 
-      var catBadges = p.categories.slice(0, 2).map(function (c) {
-        return '<span class="fs-blog-badge">' + esc(c) + '</span>';
-      }).join('');
+      var readTimeStr = p.readTime ? p.readTime + ' min read' : '';
+
+      /* ── Meta fragment builder ── */
+      function metaAt(pos) {
+        var html = '';
+        if (cfg.blogShowReadTime  && cfg.blogReadTimePos   === pos && readTimeStr)
+          html += '<span class="fs-blog-card__readtime">' + esc(readTimeStr) + '</span>';
+        if (cfg.blogShowDate      && cfg.blogDatePos        === pos && dateStr)
+          html += '<span class="fs-blog-card__date">' + esc(dateStr) + '</span>';
+        if (cfg.blogShowAuthorMeta && cfg.blogAuthorPos     === pos && p.author)
+          html += '<span class="fs-blog-card__author">' + esc(p.author) + '</span>';
+        if (cfg.blogShowTagMeta   && cfg.blogTagPos         === pos && p.tags.length)
+          html += p.tags.slice(0, 2).map(function (t) {
+            return '<span class="fs-blog-card__tag">' + esc(t) + '</span>';
+          }).join('');
+        return html ? '<div class="fs-blog-card__meta fs-blog-card__meta--' + pos + '">' + html + '</div>' : '';
+      }
+
+      /* ── Category badges — on image or in a body position ── */
+      var catHtml = '';
+      if (cfg.blogShowCatBadge && p.categories.length) {
+        catHtml = p.categories.slice(0, 2).map(function (c) {
+          return '<span class="fs-blog-badge">' + esc(c) + '</span>';
+        }).join('');
+      }
+      var catOnImage = cfg.blogCatBadgePos === 'on-image' ? catHtml : '';
+      function catAt(pos) {
+        if (cfg.blogShowCatBadge && cfg.blogCatBadgePos === pos && catHtml) {
+          return '<div class="fs-blog-card__cats fs-blog-card__cats--' + pos + '">' + catHtml + '</div>';
+        }
+        return '';
+      }
 
       card.innerHTML = (
         '<a href="' + escAttr(p.fullUrl) + '" class="fs-blog-card__link" aria-label="' + escAttr(p.title) + '">' +
           '<div class="fs-blog-card__img"' + (imgStyle ? ' style="' + imgStyle + '"' : '') + '>' +
-            (catBadges ? '<div class="fs-blog-card__badges">' + catBadges + '</div>' : '') +
+            (catOnImage ? '<div class="fs-blog-card__badges">' + catOnImage + '</div>' : '') +
           '</div>' +
           '<div class="fs-blog-card__body">' +
-            '<div class="fs-blog-card__meta">' +
-              (dateStr ? '<span class="fs-blog-card__date">' + esc(dateStr) + '</span>' : '') +
-              (p.author ? '<span class="fs-blog-card__author">' + esc(p.author) + '</span>' : '') +
-            '</div>' +
+            catAt('above-title') + metaAt('above-title') +
             '<h3 class="fs-blog-card__title">' + esc(p.title) + '</h3>' +
+            catAt('below-title') + metaAt('below-title') +
             (p.excerpt ? '<p class="fs-blog-card__excerpt">' + esc(p.excerpt) + '</p>' : '') +
+            catAt('below-excerpt') + metaAt('below-excerpt') +
             '<span class="fs-blog-card__cta">' + esc(cfg.blogReadMore) + '</span>' +
+            catAt('below-read-more') + metaAt('below-read-more') +
           '</div>' +
         '</a>'
       );
