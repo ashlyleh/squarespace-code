@@ -187,7 +187,13 @@
   /* ═════════════════════════════════════════════════════════════════════════
      1 — BLOG FILTER
   ═════════════════════════════════════════════════════════════════════════ */
+  var blogInitDone = false;
+
   function initBlog() {
+    /* Guard against double execution */
+    if (blogInitDone) return;
+    blogInitDone = true;
+
     /* ── Find or create mount point ── */
     var mount      = qs('#' + cfg.blogMountId);
     var nativeGrid = qs(BLOG_GRID_SEL);
