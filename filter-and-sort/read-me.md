@@ -9,14 +9,19 @@ One script handles both blog and events pages. It auto-detects which context it'
 ## What it does
 
 **Blog pages**
-- Fetches post categories from Squarespace's JSON API and builds filter buttons dynamically
-- Supports sort by newest, oldest, A–Z, Z–A
-- Auto-selects a filter from the URL (`?filter=category-name`)
+- Fetches all posts from Squarespace's JSON API and builds the entire filter bar dynamically — one empty Code Block is all you add to the page
+- Filter by category, tag, author, and year via multiselect dropdowns (click to highlight, click again to deselect, no checkboxes)
+- Search by post title
+- Sort by newest, oldest, A–Z, Z–A
+- Five layout renderers matching Squarespace's native blog layouts: basic grid, masonry, single column, side-by-side, and alternating side-by-side
+- Optional editorial newsroom style: large hero first card with image overlay
+- Infinite scroll with a "Load more" button trigger
 - Adds a "See All" link to the archive block, with the blog root URL auto-detected from existing archive links
 
 **Events pages**
 - Fetches upcoming and past events from the JSON API
 - Upcoming / Past toggle
+- Search by event title, location, or category
 - Filter dropdowns for location, date range, category, and tag
 - Date range picker with two calendars, preset shortcuts, and hour-of-day selectors
 - Event count display
@@ -57,6 +62,14 @@ You'll see the same Header and Footer boxes, but scoped to just that page.
 
 ---
 
+## What is a Code Block?
+
+A Code Block is an element you add directly to a Squarespace page in the editor, the same way you'd add an image or a text section. It lets you paste raw HTML into the page layout itself — separate from the code injection boxes above.
+
+To add one: open the page editor → click the **+** button to add a new block → search for **Code** → paste your HTML inside it.
+
+---
+
 ## Installation
 
 ### Step 1 — Verify the CDN link works
@@ -67,9 +80,9 @@ Before touching Squarespace, open this URL in your browser and confirm you see J
 https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/filter-and-sort/filter-sort.js
 ```
 
-If it loads, you're good. If not, check that the file path in your GitHub repo matches exactly.
+If it loads, you're good. If not, check that the file path in your GitHub repo matches exactly — casing matters.
 
-> **Cache busting:** jsDelivr caches files aggressively. If you push an update to GitHub and the site isn't picking it up, add a version number to the URL — e.g. `@main` → `@v1.1` — or use the full commit hash from GitHub.
+> **Cache busting:** jsDelivr caches files aggressively. If you push an update to GitHub and the site isn't picking it up, change `@main` to the full commit hash from GitHub, e.g. `@ab57fe3`. This forces the CDN to fetch the latest version.
 
 ---
 
@@ -85,73 +98,96 @@ If you do want to override values for a specific site, copy just the `:root { }`
 
 ```css
 :root {
-  --fs-accent:       #your-color;
-  --fs-accent-text:  #ffffff;
-  --fs-border:       #e5e5e5;
-  --fs-radius:       4px;
-  --fs-radius-pill:  999px;
-  --fs-text:         #111111;
-  --fs-text-muted:   #111111;
-  --fs-bg:           #ffffff;
-  --fs-shadow:       0 8px 24px rgba(0, 0, 0, 0.08);
-  --fs-font:         var(--paragraph);
-  --fs-font-size:    var(--paragraph-2);
+  --fs-accent:        #your-color;
+  --fs-accent-text:   #ffffff;
+  --fs-border:        #e5e5e5;
+  --fs-radius:        4px;
+  --fs-radius-pill:   999px;
+  --fs-text:          #111111;
+  --fs-text-muted:    #111111;
+  --fs-bg:            #ffffff;
+  --fs-shadow:        0 8px 24px rgba(0, 0, 0, 0.08);
+  --fs-font:          var(--paragraph);
+  --fs-font-size:     var(--paragraph-2);
+  --fs-card-img-h:    260px;   /* image height for grid/column layouts */
+  --fs-card-side-w:   320px;   /* image width for side-by-side layouts */
 }
 ```
+
+By default these inherit from your Squarespace site styles (`--primary-accent`, `--paragraph`, etc.), so on a well-configured site you may not need to override anything.
 
 ---
 
 ### Step 3 — Blog page setup
 
-#### 3a. Add the layout elements
+#### 3a. Add the placeholder Code Block
 
-Your blog page needs two **Code Blocks** placed directly on the page — these are the containers the script will fill in. Add them in the Squarespace editor wherever you want the controls to appear (typically above the blog grid).
+The blog filter builds everything dynamically — you only need to give it one empty container on the page.
 
-**Code Block 1 — Filter buttons:**
+In the Squarespace page editor, add a **Code Block** wherever you want the filter bar and posts to appear, and paste:
 
-In the Squarespace editor, add a Code Block and paste:
 ```html
-<div id="filter-buttons-1"></div>
+<div id="blog-filter-app"></div>
 ```
 
-**Code Block 2 — Sort dropdown:**
+The script will insert the filter bar and the post grid into this div automatically. You don't need any other Code Blocks for the blog.
 
-Add a second Code Block and paste:
-```html
-<div id="sort-dropdown-1" class="custom-dropdown">
-  <div class="dropdown-trigger">
-    <span class="dropdown-label">Sort by</span>
-    <span class="dropdown-icon material-symbols-outlined">keyboard_arrow_down</span>
-  </div>
-  <div class="dropdown-options">
-    <div class="dropdown-option" data-sort="newest">Newest first</div>
-    <div class="dropdown-option" data-sort="oldest">Oldest first</div>
-    <div class="dropdown-option" data-sort="az">A – Z</div>
-    <div class="dropdown-option" data-sort="za">Z – A</div>
-  </div>
-</div>
-```
+> If your blog page already has a native Squarespace blog block on it, the script does **not** hide it automatically. Move or remove the native blog block so it doesn't appear alongside the custom layout.
 
-Remove any sort options you don't want by deleting their `<div class="dropdown-option">` lines.
+#### 3b. Choose your layout
 
-#### 3b. Add the page-level code injection
+Set `blogLayout` in the config to one of these values:
+
+| Value | Layout description |
+|-------|--------------------|
+| `'basic-grid'` | Uniform grid — fixed image height, equal columns |
+| `'masonry'` | Variable image heights — images display at their natural aspect ratio |
+| `'single-column'` | Stacked, centered, single-column list |
+| `'side-by-side'` | Image on the left, text on the right, all cards the same |
+| `'alternating'` | Image alternates left/right on every other card |
+
+You can also set `blogNewsroom: true` to make the first card a large full-bleed hero with an overlay title — works with any layout.
+
+#### 3c. Add the page-level code injection
 
 1. In Squarespace, go to **Pages**
 2. Hover over your blog page and click the **gear icon ⚙️**
 3. Click **Advanced**
-4. In the **Page Header Code Injection** box, paste the following:
+4. In the **Page Header Code Injection** box, paste the following — editing the values to match your site:
 
 ```html
 <script>
 window.filterSortConfig = {
-  blogGridSelector:  '.blog-basic-grid',   /* or '.blog-alternating-side-by-side' */
-  blogItemSelector:  '.blog-item',
-  filterContainerId: 'filter-buttons-1',
-  sortDropdownId:    'sort-dropdown-1',
-  allPostsLabel:     'All Posts',
+  /* ── Required ───────────────────────────────────── */
+  blogMountId:  'blog-filter-app',   /* must match your Code Block ID  */
+  blogUrl:      '/blog',             /* your blog page URL             */
 
-  archiveAllLabel:   '‹ See All',
-  archivePosition:   'bottom',             /* 'top' or 'bottom' */
+  /* ── Layout ─────────────────────────────────────── */
+  /* Options: 'basic-grid' | 'masonry' | 'single-column' | 'side-by-side' | 'alternating' */
+  blogLayout:   'basic-grid',
+  blogNewsroom: false,               /* true = large hero first card   */
+
+  /* ── Filters (set false to hide any of these) ───── */
+  blogShowSearch:   true,
+  blogShowCategory: true,
+  blogShowTag:      true,
+  blogShowAuthor:   true,
+  blogShowYear:     true,
+  blogShowSort:     true,
+
+  /* ── Labels ──────────────────────────────────────── */
+  blogLabelCategory: 'Categories',
+  blogLabelTag:      'Tags',
+  blogLabelAuthor:   'Authors',
+  blogLabelYear:     'Date',
+  blogResetLabel:    'Reset',
+  blogReadMore:      'Read more',
+  blogLoadMore:      'Load more',
+  blogNoResults:     'No posts match your filters.',
+
+  /* ── Archive "See All" link ──────────────────────── */
+  archiveAllLabel:  '‹ See All',
+  archivePosition:  'bottom',        /* 'top' or 'bottom'              */
 };
 </script>
 
@@ -166,17 +202,17 @@ window.filterSortConfig = {
 
 ### Step 4 — Events page setup
 
-#### 4a. Add the placeholder element
+#### 4a. Add the placeholder Code Block
 
 The events filter replaces Squarespace's native event list with a custom layout. You need to give it a container to mount into.
 
-In the Squarespace editor on your events page, add a **Code Block above the events block** and paste:
+In the Squarespace editor on your events page, add a **Code Block above the native events block** and paste:
 
 ```html
 <div id="evt-filter-app"></div>
 ```
 
-That's it for the page layout — the script builds everything else automatically from your event data.
+That's it for the page layout — the script builds everything else automatically from your event data, and hides the native events list.
 
 #### 4b. Add the page-level code injection
 
@@ -188,24 +224,29 @@ That's it for the page layout — the script builds everything else automaticall
 ```html
 <script>
 window.filterSortConfig = {
+  /* ── Required ───────────────────────────────────── */
   eventsContainerId: 'evt-filter-app',
-  upcomingLabel:     'Upcoming',
-  pastLabel:         'Past',
-  eventCountLabel:   'events',
-  resetLabel:        'Reset',
-  noResultsTitle:    'No events match these filters.',
-  noResultsSub:      'Try adjusting your filters.',
-  viewEventLabel:    'View Event',
 
-  /* Set any of these to false to hide that filter on this page */
-  showLocation:      true,
-  showDate:          true,
-  showCategory:      true,
-  showTag:           true,
-  showEventCount:    true,
-  showReset:         true,
+  /* ── Filters (set false to hide any of these) ───── */
+  eventsShowSearch: true,    /* searches title, location, and category */
+  showLocation:     true,
+  showDate:         true,
+  showCategory:     true,
+  showTag:          true,
+  showEventCount:   true,
+  showReset:        true,
 
-  use24Hour:         false,   /* true for 24-hour clock in the date picker */
+  /* ── Labels ──────────────────────────────────────── */
+  upcomingLabel:   'Upcoming',
+  pastLabel:       'Past',
+  eventCountLabel: 'events',
+  resetLabel:      'Reset',
+  noResultsTitle:  'No events match these filters.',
+  noResultsSub:    'Try adjusting your filters.',
+  viewEventLabel:  'View Event',
+
+  /* ── Date/time format ───────────────────────────── */
+  use24Hour: false,          /* true for 24-hour clock in date picker  */
 };
 </script>
 
@@ -221,9 +262,8 @@ window.filterSortConfig = {
 | What | Where in Squarespace |
 |------|----------------------|
 | `filter-sort.css` | Design → Custom CSS |
-| Filter buttons Code Block | Directly on the blog page, in the editor |
-| Sort dropdown Code Block | Directly on the blog page, in the editor |
-| Events placeholder Code Block | Directly on the events page, in the editor |
+| Blog placeholder Code Block (`<div id="blog-filter-app">`) | On the blog page in the editor, where you want the filter and posts to appear |
+| Events placeholder Code Block (`<div id="evt-filter-app">`) | On the events page in the editor, above the native events block |
 | Blog script + config | Pages → Blog page ⚙️ → Advanced → Page Header Code Injection |
 | Events script + config | Pages → Events page ⚙️ → Advanced → Page Header Code Injection |
 
@@ -231,17 +271,31 @@ window.filterSortConfig = {
 
 ## Config reference
 
-All options are optional. The script uses sensible defaults if you omit any.
+All options are optional unless marked required. The script uses the defaults listed if you omit any key.
 
 ### Blog options
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `blogGridSelector` | `'.blog-basic-grid, .blog-alternating-side-by-side'` | CSS selector for the blog grid container |
-| `blogItemSelector` | `'.blog-item'` | CSS selector for individual post items |
-| `filterContainerId` | `'filter-buttons-1'` | ID of the filter buttons Code Block |
-| `sortDropdownId` | `'sort-dropdown-1'` | ID of the sort dropdown Code Block |
-| `allPostsLabel` | `'All Posts'` | Label for the reset filter button |
+| `blogMountId` ⚠️ | `'blog-filter-app'` | ID of your placeholder Code Block — must match exactly |
+| `blogUrl` ⚠️ | current page path | Path to your blog page, e.g. `'/articles'` |
+| `blogLayout` | `'basic-grid'` | Layout style — see options above |
+| `blogNewsroom` | `false` | `true` to make the first card a large hero with overlay |
+| `blogBatchSize` | `30` | Posts to show per "Load more" click |
+| `blogShowSearch` | `true` | Show/hide the search input |
+| `blogShowCategory` | `true` | Show/hide the categories dropdown |
+| `blogShowTag` | `true` | Show/hide the tags dropdown |
+| `blogShowAuthor` | `true` | Show/hide the authors dropdown |
+| `blogShowYear` | `true` | Show/hide the date/year dropdown |
+| `blogShowSort` | `true` | Show/hide the sort selector |
+| `blogLabelCategory` | `'Categories'` | Dropdown label |
+| `blogLabelTag` | `'Tags'` | Dropdown label |
+| `blogLabelAuthor` | `'Authors'` | Dropdown label |
+| `blogLabelYear` | `'Date'` | Dropdown label |
+| `blogResetLabel` | `'Reset'` | Reset button label |
+| `blogReadMore` | `'Read more'` | Card CTA text |
+| `blogLoadMore` | `'Load more'` | Load more button text |
+| `blogNoResults` | `'No posts match your filters.'` | Empty state message |
 
 ### Archive options
 
@@ -254,27 +308,41 @@ All options are optional. The script uses sensible defaults if you omit any.
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `eventsContainerId` | `'evt-filter-app'` | ID of the placeholder Code Block |
-| `upcomingLabel` | `'Upcoming'` | Toggle button label |
-| `pastLabel` | `'Past'` | Toggle button label |
-| `eventCountLabel` | `'events'` | Suffix after the event count (e.g. "6 events") |
-| `resetLabel` | `'Reset'` | Reset button label |
-| `noResultsTitle` | `'No events match these filters.'` | Empty state heading |
-| `noResultsSub` | `'Try adjusting your filters.'` | Empty state subtext |
-| `viewEventLabel` | `'View Event'` | Card CTA link text |
+| `eventsContainerId` ⚠️ | `'evt-filter-app'` | ID of your placeholder Code Block — must match exactly |
+| `eventsShowSearch` | `true` | Show/hide the search input (searches title, location, category) |
 | `showLocation` | `true` | Show/hide location filter dropdown |
 | `showDate` | `true` | Show/hide date range picker |
 | `showCategory` | `true` | Show/hide category filter dropdown |
 | `showTag` | `true` | Show/hide tag filter dropdown |
 | `showEventCount` | `true` | Show/hide event count |
 | `showReset` | `true` | Show/hide reset button |
+| `upcomingLabel` | `'Upcoming'` | Toggle button label |
+| `pastLabel` | `'Past'` | Toggle button label |
+| `eventCountLabel` | `'events'` | Suffix after the event count, e.g. "6 events" |
+| `resetLabel` | `'Reset'` | Reset button label |
+| `noResultsTitle` | `'No events match these filters.'` | Empty state heading |
+| `noResultsSub` | `'Try adjusting your filters.'` | Empty state subtext |
+| `viewEventLabel` | `'View Event'` | Card CTA link text |
 | `use24Hour` | `false` | Use 24-hour format in the hour selectors |
+
+⚠️ = These values must match the `id` you put on your Code Block exactly. If they don't match, the script won't find the container and nothing will render.
+
+---
+
+## How filtering works
+
+**Blog filters use OR logic across all active selections.** If you select "Leadership" and "Mindset" from categories, posts matching either will show. If you also select a tag, posts matching that tag will also show — even if they don't match any selected category. Selecting more filters gives you more results, not fewer.
+
+**Reset** clears all active selections and disables itself until a filter is applied again.
+
+**Events filters** are single-select per dropdown — picking a location, for example, shows only events at that location. The date range filter works independently and stacks with the other dropdowns.
 
 ---
 
 ## Notes
 
-- The archive "See All" link auto-detects the blog root URL from existing archive links on the page. If the archive block is empty, the link defaults to `/`.
+- The archive "See All" link auto-detects the blog root URL from existing archive links on the page. If the archive block is empty (no months or categories listed yet), the link defaults to `/`.
 - The location filter dropdown is hidden automatically if only one location exists across all events.
-- On mobile, the date picker renders as a bottom sheet with a single calendar. The right-hand calendar is hidden.
-- The script guards against double-initialization with a `data-initialized` flag on the filter container, so it is safe to load site-wide.
+- On mobile, the date picker renders as a bottom sheet with a single calendar. The right-hand calendar is hidden, and preset buttons scroll horizontally.
+- Blog cards strip HTML from excerpts before rendering, so Squarespace's rich text editor markup won't appear as raw tags.
+- The masonry layout uses CSS `column-count` — images display at their natural aspect ratio, which may cause posts to appear slightly out of chronological order visually.
