@@ -1,0 +1,1212 @@
+/* ═════════════════════════════════════════════════════════════
+   filter-sort.css
+   Blog filter, sort, archive + Events filter
+   github.com/ashlyleh/squarespace-code
+   ════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════
+🟧  1 - PER-SITE OVERRIDES  🟧
+════════════════════════════════════════ */
+/*
+ * Copy this block into the site's CSS editor and adjust.
+ * Do not edit these defaults here — override them below.
+ *
+ * --fs-accent            Button active bg / hover colour
+ * --fs-accent-text       Text on accent bg (toggle active label)
+ * --fs-border            Border colour for dropdowns / filter bar
+ * --fs-radius            Corner radius for filter bar, dropdowns, cards
+ * --fs-radius-pill       Corner radius for toggle buttons
+ * --fs-text              Primary text colour
+ * --fs-text-muted        Secondary / muted text colour
+ * --fs-bg                Background colour for dropdowns / filter bar
+ * --fs-shadow            Box shadow for dropdowns and date picker
+ * --fs-font              Font family (inherits from --paragraph by default)
+ * --fs-font-size         Base font size (inherits from --paragraph-2 by default)
+ */
+
+:root {
+  --fs-accent:       var(--primary-accent);
+  --fs-accent-text:  var(--background-color);
+  --fs-border:       var(--secondary-background);
+  --fs-radius:       4px;
+  --fs-radius-pill:  999px;
+  --fs-text:         var(--body-text);
+  --fs-text-muted:   var(--body-text);
+  --fs-bg:           var(--background-color);
+  --fs-shadow:       0 8px 24px rgba(0, 0, 0, 0.08);
+  --fs-font:         var(--paragraph);
+  --fs-font-size:    var(--paragraph-2);
+}
+
+
+/* ════════════════════════════════════════
+🟧  2 - BLOG FILTER BUTTONS  🟧
+════════════════════════════════════════ */
+
+/* || FILTER CONTAINER */
+
+/* Filter Button Wrapper */
+#filter-buttons-1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 2rem;
+}
+
+/* Filter Button */
+.filter-button {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 6px 16px;
+  transition: var(--transition);
+}
+
+/* Filter Button - Hover */
+.filter-button:hover {
+  border-color: var(--fs-accent);
+  color: var(--fs-accent);
+}
+
+/* Filter Button - Active */
+.filter-button.active {
+  background: var(--fs-accent);
+  border-color: var(--fs-accent);
+  color: var(--fs-accent-text);
+}
+
+/* || BLOG ITEMS */
+
+/* Hidden Blog Item */
+.blog-item-hidden {
+  display: none !important; /* Filter state */
+}
+
+
+/* ════════════════════════════════════════
+🟧  3 - BLOG SORT DROPDOWN  🟧
+════════════════════════════════════════ */
+
+/* || SORT CONTAINER */
+
+/* Sort Dropdown Wrapper */
+.custom-dropdown {
+  box-sizing: border-box;
+  max-width: 100%;
+  position: relative;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Sort Dropdown Trigger */
+.dropdown-trigger {
+  align-items: center;
+  background: var(--fs-bg);
+  border-bottom: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  color: var(--fs-text);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  justify-content: space-between;
+  line-height: 1.6;
+  padding: 12px 15px;
+  transition: var(--transition);
+  width: 100%;
+}
+
+/* Sort Dropdown Trigger - Hover */
+.dropdown-trigger:hover {
+  border-bottom-color: var(--fs-accent);
+}
+
+/* || SORT ICON */
+
+/* Sort Dropdown Icon */
+.dropdown-icon {
+  align-items: center;
+  color: var(--fs-text);
+  display: flex;
+  font-size: var(--paragraph-1) !important; /* Material Symbol size */
+  line-height: 1;
+  transition: var(--transition);
+}
+
+/* Sort Dropdown Label */
+.dropdown-label {
+  color: var(--fs-text);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+}
+
+/* || SORT OPTIONS */
+
+/* Sort Dropdown Options Panel */
+.dropdown-options {
+  animation: fs-slideDown 0.25s ease;
+  background-color: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  display: none;
+  left: 0;
+  margin-top: -1px;
+  padding: 5px 15px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 2000;
+}
+
+/* Sort Dropdown Option */
+.dropdown-option {
+  background-color: var(--fs-bg);
+  color: var(--fs-text);
+  cursor: pointer;
+  display: block;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  margin-top: -1px;
+  padding: 5px;
+  text-align: left;
+  transition: var(--transition);
+}
+
+/* Sort Dropdown Option - Hover & Active */
+.dropdown-option.active,
+.dropdown-option:hover {
+  color: var(--fs-accent);
+}
+
+
+/* ════════════════════════════════════════
+🟧  4 - ARCHIVE BLOCK  🟧
+════════════════════════════════════════ */
+
+/* || ARCHIVE DROPDOWN */
+
+/* Archive Dropdown Container */
+.archive-block-setting-layout-dropdown {
+  position: relative;
+}
+
+/* Archive Dropdown Toggle */
+.archive-dropdown-toggle-label {
+  align-items: center;
+  background: var(--fs-bg);
+  border-bottom: 1px solid var(--fs-border);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  justify-content: space-between;
+  padding: 15px;
+  transition: var(--transition);
+}
+
+/* Archive Dropdown Toggle - Hover */
+.archive-dropdown-toggle-label:hover {
+  border-bottom-color: var(--fs-accent);
+}
+
+/* Archive Dropdown List */
+.archive-group-list {
+  list-style: none;
+  margin: 0;
+  padding: 15px 20px;
+}
+
+/* Archive Dropdown - Open State */
+.archive-block-setting-layout-dropdown[open] .archive-group-list {
+  animation: fs-slideDown 0.25s ease;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  left: 0;
+  margin-top: -1px;
+  padding: 8px 18px 12px;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 100;
+}
+
+/* || ARCHIVE LINKS */
+
+/* Archive Link */
+.archive-group-name-link {
+  display: block;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 5px;
+  transition: var(--transition);
+}
+
+/* Archive Link - Hover */
+.archive-group-name-link:hover {
+  color: var(--fs-accent);
+}
+
+/* || ARCHIVE ALL LINK */
+
+/* "See All" Link - Active State */
+.archive-group-name-link.is-active {
+  color: var(--fs-accent);
+  font-weight: var(--bold);
+}
+
+/*
+ * POSITION: "See All" defaults to bottom of list (appended via JS).
+ * To move it to the top, change cfg.archivePosition to 'top' in your
+ * window.filterSortConfig on the individual page.
+ * No CSS change needed — position is controlled entirely by JS insertion order.
+ */
+
+
+/* ════════════════════════════════════════
+🟧  5 - SEARCH BAR  🟧
+════════════════════════════════════════ */
+
+/* || SEARCH WRAPPER */
+
+/* Search Bar Wrapper */
+.sqs-search-ui-button-wrapper {
+  background: var(--fs-bg);
+  border-bottom: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  transition: var(--transition);
+  width: 100%;
+}
+
+/* Search Bar Wrapper - Focus & Hover */
+.sqs-search-ui-button-wrapper:has(.search-input:focus),
+.sqs-search-ui-button-wrapper:hover {
+  border-bottom-color: var(--fs-accent);
+}
+
+/* || SEARCH INPUT */
+
+/* Search Input */
+.sqs-search-ui-button-wrapper .search-input {
+  background-color: transparent;
+  border: none !important; /* Squarespace override */
+  box-shadow: none !important; /* Squarespace override */
+  font-family: var(--fs-font) !important; /* Squarespace override */
+  font-size: var(--fs-font-size) !important; /* Squarespace override */
+  opacity: 1 !important; /* Squarespace override */
+  outline: none !important; /* Squarespace override */
+  padding: 15px 12px 15px 15px;
+  width: 100%;
+}
+
+/* Search Input - Focus */
+.sqs-search-ui-button-wrapper .search-input:focus {
+  outline: none !important; /* Squarespace override */
+}
+
+
+/* ════════════════════════════════════════
+🟧  6 - EVENTS FILTER BAR  🟧
+════════════════════════════════════════ */
+
+/* || FILTER BAR */
+
+/* Events App Container */
+#fs-evt-app {
+  box-sizing: border-box;
+  font-family: var(--fs-font);
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Filter Bar */
+.fs-filter-bar {
+  align-items: center;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  padding: 10px 16px;
+  width: 100%;
+}
+
+/* Filter Bar Left */
+.fs-filter-left {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  gap: 14px;
+}
+
+/* Filter Bar Right */
+.fs-filter-right {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* || UPCOMING / PAST TOGGLE */
+
+/* Toggle Wrapper */
+.fs-toggle {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--fs-radius-pill);
+  display: flex;
+  padding: 3px;
+}
+
+/* Toggle Button */
+.fs-toggle-btn {
+  background: transparent;
+  border: none;
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  opacity: 0.55;
+  padding: 6px 16px;
+  transition: var(--transition);
+}
+
+/* Toggle Button - Active */
+.fs-toggle-btn--active {
+  background: var(--fs-accent);
+  color: var(--fs-accent-text);
+  opacity: 1;
+}
+
+/* || EVENT COUNT */
+
+/* Event Count Label */
+.fs-count {
+  color: var(--fs-text-muted);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+/* || RESET BUTTON */
+
+/* Reset Button */
+.fs-reset-btn {
+  background: transparent;
+  border: none;
+  color: var(--fs-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 6px 8px;
+  transition: var(--transition);
+}
+
+/* Reset Button - Hover */
+.fs-reset-btn:hover {
+  color: var(--fs-accent);
+  text-decoration: underline;
+}
+
+
+/* ════════════════════════════════════════
+🟧  7 - EVENTS DROPDOWNS  🟧
+════════════════════════════════════════ */
+
+/* || DROPDOWN BASE */
+
+/* Events Dropdown Container */
+.fs-dropdown {
+  color: var(--fs-text);
+  flex: 0 1 auto;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  min-width: 120px;
+  position: relative;
+}
+
+/* Events Dropdown Trigger */
+.fs-dd-trigger {
+  align-items: center;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  box-sizing: border-box;
+  color: var(--fs-text);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  gap: 8px;
+  justify-content: space-between;
+  padding: 8px 12px;
+  transition: var(--transition);
+  user-select: none;
+  width: 100%;
+}
+
+/* Events Dropdown Trigger - Hover */
+.fs-dd-trigger:hover {
+  border-color: var(--fs-accent);
+}
+
+/* Events Dropdown - Open State Trigger */
+.fs-dd--open .fs-dd-trigger {
+  border-color: var(--fs-text);
+}
+
+/* || CHEVRON */
+
+/* Chevron Icon */
+.fs-chevron {
+  flex-shrink: 0;
+  height: 12px;
+  opacity: 0.55;
+  transition: var(--transition);
+  width: 12px;
+}
+
+/* Chevron - Open State */
+.fs-dd--open .fs-chevron {
+  transform: rotate(180deg);
+}
+
+/* || DROPDOWN LABEL */
+
+/* Dropdown Label Text */
+.fs-dd-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* || DROPDOWN PANEL */
+
+/* Dropdown Option Panel */
+.fs-dd-panel {
+  animation: fs-slideDown 0.2s ease;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  box-shadow: var(--fs-shadow);
+  display: none;
+  list-style: none;
+  margin: 4px 0 0;
+  min-width: 180px;
+  overflow: hidden;
+  padding: 4px 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: max-content;
+  z-index: 500;
+}
+
+/* Dropdown Panel - Open State */
+.fs-dd--open .fs-dd-panel {
+  display: block;
+}
+
+/* || DROPDOWN OPTIONS */
+
+/* Dropdown Option */
+.fs-dd-option {
+  color: var(--fs-text);
+  cursor: pointer;
+  display: block;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 8px 16px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+/* Dropdown Option - Hover */
+.fs-dd-option:hover {
+  color: var(--fs-accent);
+}
+
+/* Dropdown Option - Active */
+.fs-dd-option--active {
+  color: var(--fs-accent);
+  font-weight: var(--bold);
+}
+
+/* Dropdown Option - "All" Row */
+.fs-dd-option--all {
+  border-bottom: 1px solid var(--fs-border);
+  margin-bottom: 4px;
+  opacity: 0.6;
+  padding-bottom: 10px;
+}
+
+
+/* ════════════════════════════════════════
+🟧  8 - DATE PICKER  🟧
+════════════════════════════════════════ */
+
+/* || DATE DROPDOWN */
+
+/* Date Dropdown - Wider to Prevent Label Truncation */
+.fs-dropdown--date {
+  min-width: 180px;
+}
+
+/* || DATE PICKER PANEL */
+
+/* Date Picker Panel */
+.fs-dp-panel {
+  animation: fs-slideDown 0.2s ease;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  box-shadow: var(--fs-shadow);
+  display: none;
+  min-width: 620px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 600;
+}
+
+/* Date Picker Panel - Open State */
+.fs-dd--open .fs-dp-panel {
+  display: block;
+}
+
+/* || PRESETS SIDEBAR */
+
+/* Presets + Calendars Row */
+.fs-dp-body {
+  display: flex;
+}
+
+/* Presets Sidebar */
+.fs-dp-presets {
+  border-bottom: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+/* Preset Button */
+.fs-dp-preset {
+  background: transparent;
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  opacity: 0.65;
+  padding: 5px 14px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+/* Preset Button - Hover */
+.fs-dp-preset:hover {
+  border-color: var(--fs-accent);
+  color: var(--fs-accent);
+  opacity: 1;
+}
+
+/* Preset Button - Active */
+.fs-dp-preset--active {
+  background: var(--fs-accent);
+  border-color: var(--fs-accent);
+  color: var(--fs-accent-text);
+  opacity: 1;
+}
+
+/* || CALENDARS */
+
+/* Dual Calendar Wrapper */
+.fs-dp-calendars {
+  box-sizing: border-box;
+  display: flex;
+  gap: 24px;
+  padding: 20px 20px 12px;
+}
+
+/* Single Calendar */
+.fs-dp-cal {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Calendar Header */
+.fs-dp-cal-header {
+  align-items: center;
+  display: flex;
+  font-size: var(--fs-font-size);
+  font-weight: var(--bold);
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* Calendar Nav Arrow */
+.fs-dp-nav {
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  color: var(--fs-text);
+  cursor: pointer;
+  font-size: 1.1rem;
+  height: 28px;
+  line-height: 1;
+  padding: 0;
+  transition: var(--transition);
+  width: 28px;
+}
+
+/* Calendar Nav Arrow - Hover */
+.fs-dp-nav:hover {
+  border-color: var(--fs-accent);
+  color: var(--fs-accent);
+}
+
+/* || CALENDAR GRID */
+
+/* Day Grid */
+.fs-dp-grid {
+  display: grid;
+  font-size: 0.8rem;
+  gap: 2px;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+/* Day Name Header */
+.fs-dp-day-name {
+  color: var(--fs-text-muted);
+  font-size: 0.7rem;
+  font-weight: var(--bold);
+  opacity: 0.5;
+  padding-bottom: 6px;
+}
+
+/* Calendar Cell */
+.fs-dp-cell {
+  align-items: center;
+  border-radius: var(--fs-radius);
+  cursor: pointer;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  position: relative;
+  transition: background 0.1s ease;
+}
+
+/* Calendar Cell - Hover */
+.fs-dp-cell:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Calendar Cell - Disabled */
+.fs-dp-cell--disabled {
+  color: var(--fs-text);
+  cursor: default;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* Calendar Cell - In Range */
+.fs-dp-cell--range {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 0;
+}
+
+/* Calendar Cell - Range Start */
+.fs-dp-cell--start {
+  background: var(--fs-accent) !important; /* Range state */
+  border-radius: var(--fs-radius) 0 0 var(--fs-radius);
+  color: var(--fs-accent-text);
+}
+
+/* Calendar Cell - Range End */
+.fs-dp-cell--end {
+  background: var(--fs-accent) !important; /* Range state */
+  border-radius: 0 var(--fs-radius) var(--fs-radius) 0;
+  color: var(--fs-accent-text);
+}
+
+/* Calendar Cell - Single Day Selected */
+.fs-dp-cell--single {
+  background: var(--fs-accent) !important; /* Range state */
+  border-radius: var(--fs-radius);
+  color: var(--fs-accent-text);
+}
+
+/* || HOUR SELECTORS */
+
+/* Hour Row */
+.fs-dp-hours {
+  border-top: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  display: flex;
+  gap: 16px;
+  padding: 12px 20px;
+}
+
+/* Hour Group */
+.fs-dp-hour-group {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+/* Hour Label */
+.fs-dp-hour-label {
+  color: var(--fs-text-muted);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Hour Select */
+.fs-dp-hour-sel {
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  color: var(--fs-text);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 5px 8px;
+  transition: var(--transition);
+}
+
+/* Hour Select - Focus */
+.fs-dp-hour-sel:focus {
+  border-color: var(--fs-accent);
+  outline: none;
+}
+
+/* || DATE PICKER FOOTER */
+
+/* Footer Row */
+.fs-dp-footer {
+  border-top: 1px solid var(--fs-border);
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 12px 20px;
+}
+
+/* Cancel Button */
+.fs-dp-cancel {
+  background: transparent;
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  color: var(--fs-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 8px 16px;
+  transition: var(--transition);
+}
+
+/* Cancel Button - Hover */
+.fs-dp-cancel:hover {
+  border-color: var(--fs-accent);
+  color: var(--fs-accent);
+}
+
+/* Apply Button */
+.fs-dp-apply {
+  background: var(--fs-accent);
+  border: 1px solid var(--fs-accent);
+  border-radius: var(--fs-radius);
+  color: var(--fs-accent-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 8px 20px;
+  transition: var(--transition);
+}
+
+/* Apply Button - Hover */
+.fs-dp-apply:hover {
+  opacity: 0.85;
+}
+
+
+/* ════════════════════════════════════════
+🟧  9 - EVENT CARDS  🟧
+════════════════════════════════════════ */
+
+/* || CARD LIST */
+
+/* Event List Container */
+.fs-evt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* || INDIVIDUAL CARD */
+
+/* Event Card */
+.fs-evt-card {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+/* Event Card - Hover */
+.fs-evt-card:hover {
+  box-shadow: var(--fs-shadow);
+}
+
+/* Event Card Inner Link */
+.fs-evt-card__inner {
+  color: inherit;
+  display: flex;
+  text-decoration: none !important; /* Squarespace override */
+}
+
+/* || CARD IMAGE */
+
+/* Card Image Panel */
+.fs-evt-card__img {
+  background-color: var(--fs-border);
+  background-size: cover;
+  flex-shrink: 0;
+  position: relative;
+  width: 260px;
+}
+
+/* Card Badges Over Image */
+.fs-evt-card__badges {
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  left: 12px;
+  position: absolute;
+}
+
+/* || CARD BODY */
+
+/* Card Body */
+.fs-evt-card__body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 6px;
+  padding: 20px 24px;
+}
+
+/* || CARD META */
+
+/* Meta Row */
+.fs-evt-card__meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+/* Meta Date */
+.fs-evt-card__date {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Meta Time */
+.fs-evt-card__time {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Meta Time - Before Separator */
+.fs-evt-card__time::before {
+  content: "·";
+  margin-right: 8px;
+  opacity: 0.4;
+}
+
+/* Meta Location */
+.fs-evt-card__loc {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Meta Location - Before Separator */
+.fs-evt-card__loc::before {
+  content: "·";
+  margin-right: 8px;
+  opacity: 0.4;
+}
+
+/* || CARD CONTENT */
+
+/* Card Title */
+.fs-evt-card__title {
+  font-family: var(--heading);
+  font-size: var(--heading-3);
+  font-weight: var(--bold);
+  line-height: 1.25;
+  margin: 0 0 4px !important; /* Squarespace override */
+}
+
+/* Card Excerpt */
+.fs-evt-card__excerpt {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  line-height: 1.5;
+  margin: 0 !important; /* Squarespace override */
+  opacity: 0.75;
+}
+
+/* || CARD BADGES */
+
+/* Event Badge (category / on image) */
+.fs-evt-badge {
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: var(--fs-radius-pill);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: var(--bold);
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  text-transform: var(--transform);
+}
+
+/* Tag Badge (below card title) */
+.fs-evt-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Tag Badge Item */
+.fs-evt-badge--tag {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text);
+  font-size: 0.7rem;
+  font-weight: var(--bold);
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  text-transform: var(--transform);
+}
+
+/* || CARD CTA */
+
+/* CTA Link */
+.fs-evt-card__cta {
+  color: var(--fs-accent);
+  font-size: var(--fs-font-size);
+  font-weight: var(--bold);
+  margin-top: auto;
+  padding-top: 12px;
+  transition: var(--transition);
+}
+
+/* CTA Link - Hover (via parent) */
+.fs-evt-card:hover .fs-evt-card__cta {
+  opacity: 0.75;
+}
+
+/* || NO RESULTS */
+
+/* No Results Block */
+.fs-no-results {
+  box-sizing: border-box;
+  padding: 48px 20px;
+  text-align: center;
+  width: 100%;
+}
+
+/* No Results Title */
+.fs-no-results__title {
+  font-family: var(--heading);
+  font-size: var(--heading-4);
+  margin: 0 0 8px !important; /* Squarespace override */
+}
+
+/* No Results Subtitle */
+.fs-no-results__sub {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  margin: 0 !important; /* Squarespace override */
+  opacity: 0.6;
+}
+
+
+/* ════════════════════════════════════════
+🟧  10 - ANIMATIONS  🟧
+════════════════════════════════════════ */
+
+/* Slide Down - Dropdown & Panels */
+@keyframes fs-slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ════════════════════════════════════════
+🟧  11 - MOBILE  🟧
+════════════════════════════════════════ */
+
+/* || FILTER BAR - TABLET & BELOW */
+
+@media screen and (max-width: 1024px) {
+  .custom-dropdown {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .dropdown-options {
+    z-index: 2000;
+  }
+}
+
+/* || FILTER BAR - MOBILE */
+
+@media screen and (max-width: 767px) {
+
+  /* Blog Sort Full Width */
+  .custom-dropdown {
+    width: 100%;
+  }
+
+  /* Events Filter Bar - Stack */
+  .fs-filter-bar {
+    align-items: stretch;
+    border-radius: var(--fs-radius);
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  /* Events Filter Left - Space Between */
+  .fs-filter-left {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  /* Events Filter Right - Stack Full Width */
+  .fs-filter-right {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* Events Dropdown Full Width */
+  .fs-dropdown {
+    width: 100%;
+  }
+
+  /* Events Dropdown Trigger Full Width */
+  .fs-dd-trigger {
+    width: 100%;
+  }
+
+  /* Events Dropdown Panel Full Width */
+  .fs-dd-panel {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  /* Reset Button Left Align */
+  .fs-reset-btn {
+    padding-left: 0;
+    text-align: left;
+  }
+
+  /* || DATE PICKER MOBILE */
+
+  /* Date Picker Panel Full Width */
+  .fs-dp-panel {
+    left: 0;
+    min-width: 0;
+    position: fixed;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-radius: var(--fs-radius) var(--fs-radius) 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 800;
+  }
+
+  /* Calendars - Single Column on Mobile */
+  .fs-dp-calendars {
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  /* Hide Right Calendar on Mobile */
+  #fs-dp-cal-right {
+    display: none;
+  }
+
+  /* Presets - Horizontal Scroll on Mobile */
+  .fs-dp-presets {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px 12px;
+  }
+
+  /* Preset Button - No Shrink on Mobile */
+  .fs-dp-preset {
+    flex-shrink: 0;
+  }
+
+  /* Hour Row - Stack on Mobile */
+  .fs-dp-hours {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* || EVENT CARDS MOBILE */
+
+  /* Event Card - Stack on Mobile */
+  .fs-evt-card__inner {
+    flex-direction: column;
+  }
+
+  /* Card Image - Full Width on Mobile */
+  .fs-evt-card__img {
+    height: 200px;
+    width: 100%;
+  }
+}
