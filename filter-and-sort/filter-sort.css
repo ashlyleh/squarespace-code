@@ -1,27 +1,31 @@
-/* ═════════════════════════════════════════════════════════════
-   filter-sort.css
-   Blog filter, sort, archive + Events filter
+/* ═══════════════════════════════════════════════════════════════════════════
+   filter-sort.css  v2.0
+   Blog filter + Events filter — Squarespace 7.1 (Fluid Engine)
    github.com/ashlyleh/squarespace-code
-   ════════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ════════════════════════════════════════
+
+/* ══════════════════════════════════════
 🟧  1 - PER-SITE OVERRIDES  🟧
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 /*
- * Copy this block into the site's CSS editor and adjust.
- * Do not edit these defaults here — override them below.
+ * Copy this :root block into each site's CSS editor and adjust.
+ * These are the only values you should change per site.
+ * Everything else inherits from your Squarespace palette by default.
  *
- * --fs-accent            Button active bg / hover colour
- * --fs-accent-text       Text on accent bg (toggle active label)
- * --fs-border            Border colour for dropdowns / filter bar
- * --fs-radius            Corner radius for filter bar, dropdowns, cards
- * --fs-radius-pill       Corner radius for toggle buttons
- * --fs-text              Primary text colour
- * --fs-text-muted        Secondary / muted text colour
- * --fs-bg                Background colour for dropdowns / filter bar
- * --fs-shadow            Box shadow for dropdowns and date picker
- * --fs-font              Font family (inherits from --paragraph by default)
- * --fs-font-size         Base font size (inherits from --paragraph-2 by default)
+ * --fs-accent          Active/hover colour (buttons, selected items)
+ * --fs-accent-text     Text on accent backgrounds
+ * --fs-border          Border colour for bar, dropdowns, cards
+ * --fs-radius          Corner radius — bar, cards, dropdowns
+ * --fs-radius-pill     Corner radius — toggle buttons, badges
+ * --fs-text            Primary text
+ * --fs-text-muted      Secondary / metadata text
+ * --fs-bg              Background for bar, dropdowns, cards
+ * --fs-shadow          Box shadow for dropdowns and date picker
+ * --fs-font            Font family
+ * --fs-font-size       Base font size
+ * --fs-card-img-h      Card image height (basic-grid, single-column)
+ * --fs-card-side-w     Image width for side-by-side layouts
  */
 
 :root {
@@ -36,164 +40,258 @@
   --fs-shadow:       0 8px 24px rgba(0, 0, 0, 0.08);
   --fs-font:         var(--paragraph);
   --fs-font-size:    var(--paragraph-2);
+  --fs-card-img-h:   260px;
+  --fs-card-side-w:  320px;
 }
 
 
-/* ════════════════════════════════════════
-🟧  2 - BLOG FILTER BUTTONS  🟧
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+🟧  2 - FILTER BAR (SHARED)  🟧
+══════════════════════════════════════ */
 
-/* || FILTER CONTAINER */
+/* || BAR WRAPPER */
+/* Blog Bar Container */
+.fs-blog-bar {
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+  width: 100%;
+}
 
-/* Filter Button Wrapper */
-#filter-buttons-1 {
+/* Shared Inner Bar Layout */
+.fs-bar-inner,
+.fs-filter-bar {
+  align-items: center;
+  background: var(--fs-bg);
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 2rem;
+  padding: 8px 12px;
+  width: 100%;
 }
 
-/* Filter Button */
-.filter-button {
+/* || SEARCH INPUT */
+/* Search Wrap */
+.fs-bar-search-wrap {
+  align-items: center;
+  display: flex;
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+/* Search Input */
+.fs-bar-search {
+  background: transparent;
+  border: none;
+  color: var(--fs-text);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  min-width: 0;
+  outline: none;
+  padding: 4px 0;
+  width: 100%;
+}
+
+/* Search Input - Placeholder */
+.fs-bar-search::placeholder {
+  color: var(--fs-text-muted);
+  opacity: 0.45;
+}
+
+/* || SORT SELECT */
+/* Sort Dropdown */
+.fs-bar-sort {
+  appearance: none;
+  background: transparent url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;
   border: 1px solid var(--fs-border);
-  border-radius: var(--fs-radius-pill);
+  border-radius: var(--fs-radius);
   color: var(--fs-text);
   cursor: pointer;
   font-family: var(--fs-font);
   font-size: var(--fs-font-size);
-  padding: 6px 16px;
+  padding: 6px 28px 6px 10px;
   transition: var(--transition);
 }
 
-/* Filter Button - Hover */
-.filter-button:hover {
+/* Sort Dropdown - Hover */
+.fs-bar-sort:hover {
   border-color: var(--fs-accent);
+}
+
+/* Sort Dropdown - Focus */
+.fs-bar-sort:focus {
+  border-color: var(--fs-accent);
+  outline: none;
+}
+
+/* || RESET BUTTON */
+/* Reset Button */
+.fs-bar-reset {
+  background: transparent;
+  border: none;
+  color: var(--fs-text-muted);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  padding: 6px 4px;
+  transition: var(--transition);
+}
+
+/* Reset Button - Hover */
+.fs-bar-reset:hover {
   color: var(--fs-accent);
+  text-decoration: underline;
 }
 
-/* Filter Button - Active */
-.filter-button.active {
-  background: var(--fs-accent);
-  border-color: var(--fs-accent);
-  color: var(--fs-accent-text);
-}
-
-/* || BLOG ITEMS */
-
-/* Hidden Blog Item */
-.blog-item-hidden {
-  display: none !important; /* Filter state */
+/* Reset Button - Disabled State */
+.fs-bar-reset--disabled {
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 
-/* ════════════════════════════════════════
-🟧  3 - BLOG SORT DROPDOWN  🟧
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+🟧  3 - MULTISELECT DROPDOWN (BLOG)  🟧
+══════════════════════════════════════ */
 
-/* || SORT CONTAINER */
-
-/* Sort Dropdown Wrapper */
-.custom-dropdown {
-  box-sizing: border-box;
-  max-width: 100%;
+/* || DROPDOWN CONTAINER */
+/* Blog Dropdown */
+.fs-dropdown {
+  flex: 0 0 auto;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
   position: relative;
-  width: 100%;
-  z-index: 1000;
 }
 
-/* Sort Dropdown Trigger */
-.dropdown-trigger {
+/* Blog Dropdown Trigger */
+.fs-dd-trigger {
   align-items: center;
-  background: var(--fs-bg);
-  border-bottom: 1px solid var(--fs-border);
-  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
   color: var(--fs-text);
   cursor: pointer;
   display: flex;
   font-family: var(--fs-font);
   font-size: var(--fs-font-size);
-  justify-content: space-between;
-  line-height: 1.6;
-  padding: 12px 15px;
+  gap: 6px;
+  padding: 6px 10px;
   transition: var(--transition);
-  width: 100%;
+  white-space: nowrap;
 }
 
-/* Sort Dropdown Trigger - Hover */
-.dropdown-trigger:hover {
-  border-bottom-color: var(--fs-accent);
+/* Blog Dropdown Trigger - Hover */
+.fs-dd-trigger:hover {
+  border-color: var(--fs-accent);
 }
 
-/* || SORT ICON */
+/* Blog Dropdown - Open Trigger */
+.fs-dd--open .fs-dd-trigger {
+  border-color: var(--fs-accent);
+}
 
-/* Sort Dropdown Icon */
-.dropdown-icon {
-  align-items: center;
-  color: var(--fs-text);
-  display: flex;
-  font-size: var(--paragraph-1) !important; /* Material Symbol size */
-  line-height: 1;
+/* || CHEVRON */
+/* Chevron Icon */
+.fs-chevron {
+  flex-shrink: 0;
+  height: 10px;
+  opacity: 0.5;
   transition: var(--transition);
+  width: 10px;
 }
 
-/* Sort Dropdown Label */
-.dropdown-label {
-  color: var(--fs-text);
-  font-family: var(--fs-font);
-  font-size: var(--fs-font-size);
+/* Chevron - Open State */
+.fs-dd--open .fs-chevron {
+  transform: rotate(180deg);
 }
 
-/* || SORT OPTIONS */
-
-/* Sort Dropdown Options Panel */
-.dropdown-options {
-  animation: fs-slideDown 0.25s ease;
-  background-color: var(--fs-bg);
+/* || DROPDOWN PANEL */
+/* Dropdown Panel */
+.fs-dd-panel {
+  animation: fs-slideDown 0.2s ease;
+  background: var(--fs-bg);
   border: 1px solid var(--fs-border);
-  box-sizing: border-box;
+  border-radius: var(--fs-radius);
+  box-shadow: var(--fs-shadow);
   display: none;
-  left: 0;
-  margin-top: -1px;
-  padding: 5px 15px;
+  list-style: none;
+  margin: 4px 0 0;
+  min-width: 160px;
+  padding: 4px 0;
   position: absolute;
   top: 100%;
-  width: 100%;
-  z-index: 2000;
+  z-index: 500;
 }
 
-/* Sort Dropdown Option */
-.dropdown-option {
-  background-color: var(--fs-bg);
+/* Dropdown Panel - Open State */
+.fs-dd--open .fs-dd-panel {
+  display: block;
+}
+
+/* || DROPDOWN OPTIONS */
+/* Dropdown Option - Blog (multiselect, no checkboxes) */
+.fs-dd-opt {
   color: var(--fs-text);
   cursor: pointer;
-  display: block;
   font-family: var(--fs-font);
   font-size: var(--fs-font-size);
-  margin-top: -1px;
-  padding: 5px;
-  text-align: left;
+  list-style: none;
+  padding: 8px 14px;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
-/* Sort Dropdown Option - Hover & Active */
-.dropdown-option.active,
-.dropdown-option:hover {
+/* Dropdown Option - Blog Hover */
+.fs-dd-opt:hover {
   color: var(--fs-accent);
 }
 
-
-/* ════════════════════════════════════════
-🟧  4 - ARCHIVE BLOCK  🟧
-════════════════════════════════════════ */
-
-/* || ARCHIVE DROPDOWN */
-
-/* Archive Dropdown Container */
-.archive-block-setting-layout-dropdown {
-  position: relative;
+/* Dropdown Option - Blog Active (selected) */
+.fs-dd-opt--active {
+  color: var(--fs-accent);
+  font-weight: var(--bold);
 }
 
-/* Archive Dropdown Toggle */
+/* Dropdown Option - Events (single-select) */
+.fs-dd-option {
+  color: var(--fs-text);
+  cursor: pointer;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  list-style: none;
+  padding: 8px 14px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+/* Dropdown Option - Events Hover */
+.fs-dd-option:hover {
+  color: var(--fs-accent);
+}
+
+/* Dropdown Option - Events Active */
+.fs-dd-option--active {
+  color: var(--fs-accent);
+  font-weight: var(--bold);
+}
+
+/* Dropdown Option - "All" Row */
+.fs-dd-option--all {
+  border-bottom: 1px solid var(--fs-border);
+  margin-bottom: 4px;
+  opacity: 0.6;
+  padding-bottom: 10px;
+}
+
+
+/* ══════════════════════════════════════
+🟧  4 - ARCHIVE BLOCK  🟧
+══════════════════════════════════════ */
+
+/* || ARCHIVE DROPDOWN */
+/* Archive Toggle Label */
 .archive-dropdown-toggle-label {
   align-items: center;
   background: var(--fs-bg);
@@ -207,12 +305,12 @@
   transition: var(--transition);
 }
 
-/* Archive Dropdown Toggle - Hover */
+/* Archive Toggle Label - Hover */
 .archive-dropdown-toggle-label:hover {
   border-bottom-color: var(--fs-accent);
 }
 
-/* Archive Dropdown List */
+/* Archive Group List */
 .archive-group-list {
   list-style: none;
   margin: 0;
@@ -234,7 +332,6 @@
 }
 
 /* || ARCHIVE LINKS */
-
 /* Archive Link */
 .archive-group-name-link {
   display: block;
@@ -249,29 +346,19 @@
   color: var(--fs-accent);
 }
 
-/* || ARCHIVE ALL LINK */
-
-/* "See All" Link - Active State */
+/* Archive All Link - Active */
 .archive-group-name-link.is-active {
   color: var(--fs-accent);
   font-weight: var(--bold);
 }
 
-/*
- * POSITION: "See All" defaults to bottom of list (appended via JS).
- * To move it to the top, change cfg.archivePosition to 'top' in your
- * window.filterSortConfig on the individual page.
- * No CSS change needed — position is controlled entirely by JS insertion order.
- */
 
-
-/* ════════════════════════════════════════
-🟧  5 - SEARCH BAR  🟧
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+🟧  5 - SEARCH BAR (SQUARESPACE)  🟧
+══════════════════════════════════════ */
 
 /* || SEARCH WRAPPER */
-
-/* Search Bar Wrapper */
+/* Search Wrapper */
 .sqs-search-ui-button-wrapper {
   background: var(--fs-bg);
   border-bottom: 1px solid var(--fs-border);
@@ -280,14 +367,13 @@
   width: 100%;
 }
 
-/* Search Bar Wrapper - Focus & Hover */
+/* Search Wrapper - Focus & Hover */
 .sqs-search-ui-button-wrapper:has(.search-input:focus),
 .sqs-search-ui-button-wrapper:hover {
   border-bottom-color: var(--fs-accent);
 }
 
 /* || SEARCH INPUT */
-
 /* Search Input */
 .sqs-search-ui-button-wrapper .search-input {
   background-color: transparent;
@@ -307,34 +393,395 @@
 }
 
 
-/* ════════════════════════════════════════
-🟧  6 - EVENTS FILTER BAR  🟧
-════════════════════════════════════════ */
+/* ══════════════════════════════════════
+🟧  6 - BLOG CARD LAYOUTS  🟧
+══════════════════════════════════════ */
+
+/* || GRID CONTAINER */
+/* Blog Grid */
+.fs-blog-grid {
+  width: 100%;
+}
+
+/* || SHARED CARD BASE */
+/* Blog Card Base */
+.fs-blog-card {
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+/* Blog Card Link */
+.fs-blog-card__link {
+  color: inherit;
+  display: block;
+  text-decoration: none !important; /* Squarespace override */
+}
+
+/* || CARD IMAGE */
+/* Card Image Container */
+.fs-blog-card__img {
+  background-color: var(--fs-border);
+  background-size: cover;
+  position: relative;
+}
+
+/* Card Badges Over Image */
+.fs-blog-card__badges {
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  left: 12px;
+  position: absolute;
+}
+
+/* Category Badge */
+.fs-blog-badge {
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--fs-radius-pill);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: var(--bold);
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  text-transform: var(--transform);
+}
+
+/* || CARD BODY */
+/* Card Body */
+.fs-blog-card__body {
+  box-sizing: border-box;
+}
+
+/* Card Meta Row */
+.fs-blog-card__meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+/* Card Date */
+.fs-blog-card__date {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Card Author */
+.fs-blog-card__author {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Card Author - Before Separator */
+.fs-blog-card__author::before {
+  content: "\00b7";
+  margin-right: 8px;
+  opacity: 0.4;
+}
+
+/* Card Title */
+.fs-blog-card__title {
+  font-family: var(--heading);
+  font-size: var(--heading-3);
+  font-weight: var(--bold);
+  line-height: 1.25;
+  margin: 0 0 8px !important; /* Squarespace override */
+}
+
+/* Card Excerpt */
+.fs-blog-card__excerpt {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  line-height: 1.5;
+  margin: 0 0 10px !important; /* Squarespace override */
+  opacity: 0.75;
+}
+
+/* Card CTA */
+.fs-blog-card__cta {
+  color: var(--fs-accent);
+  display: inline-block;
+  font-size: var(--fs-font-size);
+  font-weight: var(--bold);
+  transition: var(--transition);
+}
+
+/* Card CTA - Hover */
+.fs-blog-card:hover .fs-blog-card__cta {
+  opacity: 0.75;
+}
+
+/* || BASIC GRID LAYOUT */
+/* Basic Grid Container */
+.fs-blog-grid[data-layout="basic-grid"] {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Basic Grid Card */
+.fs-blog-card--basic-grid {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+}
+
+/* Basic Grid Card - Hover */
+.fs-blog-card--basic-grid:hover {
+  box-shadow: var(--fs-shadow);
+  transform: translateY(-2px);
+}
+
+/* Basic Grid Image */
+.fs-blog-card--basic-grid .fs-blog-card__img {
+  height: var(--fs-card-img-h);
+  width: 100%;
+}
+
+/* Basic Grid Body */
+.fs-blog-card--basic-grid .fs-blog-card__body {
+  padding: 18px 20px 20px;
+}
+
+/* || NEWSROOM HERO (basic-grid first card when blogNewsroom: true) */
+/* Hero Card */
+.fs-blog-card--hero {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  grid-column: 1 / -1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Hero Image - Full Bleed */
+.fs-blog-card--hero .fs-blog-card__img {
+  height: 480px;
+  width: 100%;
+}
+
+/* Hero Body Overlay */
+.fs-blog-card--hero .fs-blog-card__body {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
+  bottom: 0;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  padding: 60px 48px 40px;
+  position: absolute;
+  right: 0;
+}
+
+/* Hero Title */
+.fs-blog-card--hero .fs-blog-card__title {
+  color: #fff !important; /* Squarespace override */
+  font-size: var(--heading-2) !important; /* Squarespace override */
+  max-width: 680px;
+}
+
+/* Hero Excerpt */
+.fs-blog-card--hero .fs-blog-card__excerpt {
+  color: rgba(255, 255, 255, 0.8) !important; /* Squarespace override */
+  max-width: 560px;
+}
+
+/* Hero Date & Author */
+.fs-blog-card--hero .fs-blog-card__date,
+.fs-blog-card--hero .fs-blog-card__author {
+  color: rgba(255, 255, 255, 0.6) !important; /* Squarespace override */
+  opacity: 1;
+}
+
+/* Hero CTA */
+.fs-blog-card--hero .fs-blog-card__cta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* || MASONRY LAYOUT */
+/* Masonry Grid Container */
+.fs-blog-grid[data-layout="masonry"] {
+  column-count: 3;
+  column-gap: 24px;
+}
+
+/* Masonry Card */
+.fs-blog-card--masonry {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+  break-inside: avoid;
+  display: inline-block;
+  margin-bottom: 24px;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Masonry Card - Hover */
+.fs-blog-card--masonry:hover {
+  box-shadow: var(--fs-shadow);
+}
+
+/* Masonry Image - Variable Height */
+.fs-blog-card--masonry .fs-blog-card__img {
+  background-size: cover;
+  padding-bottom: 66%;
+  width: 100%;
+}
+
+/* Masonry Body */
+.fs-blog-card--masonry .fs-blog-card__body {
+  padding: 16px 18px 18px;
+}
+
+/* || SINGLE COLUMN LAYOUT */
+/* Single Column Container */
+.fs-blog-grid[data-layout="single-column"] {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 0 auto;
+  max-width: 720px;
+}
+
+/* Single Column Card */
+.fs-blog-card--single-column {
+  border-bottom: 1px solid var(--fs-border);
+  padding-bottom: 32px;
+}
+
+/* Single Column Image */
+.fs-blog-card--single-column .fs-blog-card__img {
+  border-radius: var(--fs-radius);
+  height: var(--fs-card-img-h);
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* || SIDE BY SIDE LAYOUT */
+/* Side-by-Side Container */
+.fs-blog-grid[data-layout="side-by-side"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Side-by-Side Card */
+.fs-blog-card--side-by-side {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+}
+
+/* Side-by-Side Card Link Override */
+.fs-blog-card--side-by-side .fs-blog-card__link {
+  align-items: stretch;
+  display: flex;
+}
+
+/* Side-by-Side Image */
+.fs-blog-card--side-by-side .fs-blog-card__img {
+  flex-shrink: 0;
+  width: var(--fs-card-side-w);
+}
+
+/* Side-by-Side Body */
+.fs-blog-card--side-by-side .fs-blog-card__body {
+  flex-grow: 1;
+  padding: 28px 32px;
+}
+
+/* || ALTERNATING SIDE BY SIDE LAYOUT */
+
+/* Alternating Container */
+.fs-blog-grid[data-layout="alternating"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Alternating Card */
+.fs-blog-card--alternating {
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius);
+}
+
+/* Alternating Card Link Override */
+.fs-blog-card--alternating .fs-blog-card__link {
+  align-items: stretch;
+  display: flex;
+}
+
+/* Alternating Card - Even Items */
+.fs-blog-card--alternating:nth-child(even) .fs-blog-card__link {
+  flex-direction: row-reverse;
+}
+
+/* Alternating Image */
+.fs-blog-card--alternating .fs-blog-card__img {
+  flex-shrink: 0;
+  width: var(--fs-card-side-w);
+}
+
+/* Alternating Body */
+.fs-blog-card--alternating .fs-blog-card__body {
+  flex-grow: 1;
+  padding: 28px 32px;
+}
+
+/* || NO RESULTS */
+/* Blog No Results */
+.fs-blog-no-results {
+  color: var(--fs-text-muted);
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  opacity: 0.65;
+  padding: 48px 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* || LOAD MORE BUTTON */
+/* Load More */
+.fs-blog-load-more {
+  background: transparent;
+  border: 1px solid var(--fs-border);
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text);
+  cursor: pointer;
+  display: block;
+  font-family: var(--fs-font);
+  font-size: var(--fs-font-size);
+  margin: 32px auto 0;
+  padding: 10px 28px;
+  transition: var(--transition);
+}
+
+/* Load More - Hover */
+.fs-blog-load-more:hover {
+  border-color: var(--fs-accent);
+  color: var(--fs-accent);
+}
+
+
+/* ══════════════════════════════════════
+🟧  7 - EVENTS FILTER BAR  🟧
+══════════════════════════════════════ */
 
 /* || FILTER BAR */
-
 /* Events App Container */
 #fs-evt-app {
   box-sizing: border-box;
   font-family: var(--fs-font);
-  margin: 0 auto;
   width: 100%;
 }
 
 /* Filter Bar */
 .fs-filter-bar {
-  align-items: center;
-  background: var(--fs-bg);
-  border: 1px solid var(--fs-border);
-  border-radius: var(--fs-radius);
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: space-between;
   margin-bottom: 2.5rem;
-  padding: 10px 16px;
-  width: 100%;
 }
 
 /* Filter Bar Left */
@@ -342,7 +789,7 @@
   align-items: center;
   display: flex;
   flex-shrink: 0;
-  gap: 14px;
+  gap: 12px;
 }
 
 /* Filter Bar Right */
@@ -355,8 +802,13 @@
   justify-content: flex-end;
 }
 
-/* || UPCOMING / PAST TOGGLE */
+/* Events Search Wrap */
+.fs-bar-search-wrap--evt {
+  flex: 0 0 auto;
+  min-width: 160px;
+}
 
+/* || UPCOMING / PAST TOGGLE */
 /* Toggle Wrapper */
 .fs-toggle {
   background: rgba(0, 0, 0, 0.04);
@@ -388,8 +840,7 @@
 }
 
 /* || EVENT COUNT */
-
-/* Event Count Label */
+/* Event Count */
 .fs-count {
   color: var(--fs-text-muted);
   font-family: var(--fs-font);
@@ -399,8 +850,7 @@
 }
 
 /* || RESET BUTTON */
-
-/* Reset Button */
+/* Events Reset Button */
 .fs-reset-btn {
   background: transparent;
   border: none;
@@ -409,161 +859,26 @@
   flex-shrink: 0;
   font-family: var(--fs-font);
   font-size: var(--fs-font-size);
-  padding: 6px 8px;
+  padding: 6px 4px;
   transition: var(--transition);
 }
 
-/* Reset Button - Hover */
+/* Events Reset Button - Hover */
 .fs-reset-btn:hover {
   color: var(--fs-accent);
   text-decoration: underline;
 }
 
 
-/* ════════════════════════════════════════
-🟧  7 - EVENTS DROPDOWNS  🟧
-════════════════════════════════════════ */
-
-/* || DROPDOWN BASE */
-
-/* Events Dropdown Container */
-.fs-dropdown {
-  color: var(--fs-text);
-  flex: 0 1 auto;
-  font-family: var(--fs-font);
-  font-size: var(--fs-font-size);
-  min-width: 120px;
-  position: relative;
-}
-
-/* Events Dropdown Trigger */
-.fs-dd-trigger {
-  align-items: center;
-  background: var(--fs-bg);
-  border: 1px solid var(--fs-border);
-  border-radius: var(--fs-radius);
-  box-sizing: border-box;
-  color: var(--fs-text);
-  cursor: pointer;
-  display: flex;
-  font-family: var(--fs-font);
-  font-size: var(--fs-font-size);
-  gap: 8px;
-  justify-content: space-between;
-  padding: 8px 12px;
-  transition: var(--transition);
-  user-select: none;
-  width: 100%;
-}
-
-/* Events Dropdown Trigger - Hover */
-.fs-dd-trigger:hover {
-  border-color: var(--fs-accent);
-}
-
-/* Events Dropdown - Open State Trigger */
-.fs-dd--open .fs-dd-trigger {
-  border-color: var(--fs-text);
-}
-
-/* || CHEVRON */
-
-/* Chevron Icon */
-.fs-chevron {
-  flex-shrink: 0;
-  height: 12px;
-  opacity: 0.55;
-  transition: var(--transition);
-  width: 12px;
-}
-
-/* Chevron - Open State */
-.fs-dd--open .fs-chevron {
-  transform: rotate(180deg);
-}
-
-/* || DROPDOWN LABEL */
-
-/* Dropdown Label Text */
-.fs-dd-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* || DROPDOWN PANEL */
-
-/* Dropdown Option Panel */
-.fs-dd-panel {
-  animation: fs-slideDown 0.2s ease;
-  background: var(--fs-bg);
-  border: 1px solid var(--fs-border);
-  border-radius: var(--fs-radius);
-  box-shadow: var(--fs-shadow);
-  display: none;
-  list-style: none;
-  margin: 4px 0 0;
-  min-width: 180px;
-  overflow: hidden;
-  padding: 4px 0;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  width: max-content;
-  z-index: 500;
-}
-
-/* Dropdown Panel - Open State */
-.fs-dd--open .fs-dd-panel {
-  display: block;
-}
-
-/* || DROPDOWN OPTIONS */
-
-/* Dropdown Option */
-.fs-dd-option {
-  color: var(--fs-text);
-  cursor: pointer;
-  display: block;
-  font-family: var(--fs-font);
-  font-size: var(--fs-font-size);
-  padding: 8px 16px;
-  transition: var(--transition);
-  white-space: nowrap;
-}
-
-/* Dropdown Option - Hover */
-.fs-dd-option:hover {
-  color: var(--fs-accent);
-}
-
-/* Dropdown Option - Active */
-.fs-dd-option--active {
-  color: var(--fs-accent);
-  font-weight: var(--bold);
-}
-
-/* Dropdown Option - "All" Row */
-.fs-dd-option--all {
-  border-bottom: 1px solid var(--fs-border);
-  margin-bottom: 4px;
-  opacity: 0.6;
-  padding-bottom: 10px;
-}
-
-
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
 🟧  8 - DATE PICKER  🟧
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 
 /* || DATE DROPDOWN */
-
-/* Date Dropdown - Wider to Prevent Label Truncation */
+/* Date Dropdown - Wider */
 .fs-dropdown--date {
-  min-width: 180px;
+  min-width: 150px;
 }
-
-/* || DATE PICKER PANEL */
 
 /* Date Picker Panel */
 .fs-dp-panel {
@@ -573,7 +888,7 @@
   border-radius: var(--fs-radius);
   box-shadow: var(--fs-shadow);
   display: none;
-  min-width: 620px;
+  min-width: 600px;
   position: absolute;
   right: 0;
   top: calc(100% + 6px);
@@ -585,14 +900,8 @@
   display: block;
 }
 
-/* || PRESETS SIDEBAR */
-
-/* Presets + Calendars Row */
-.fs-dp-body {
-  display: flex;
-}
-
-/* Presets Sidebar */
+/* || PRESETS */
+/* Presets Row */
 .fs-dp-presets {
   border-bottom: 1px solid var(--fs-border);
   box-sizing: border-box;
@@ -633,7 +942,6 @@
 }
 
 /* || CALENDARS */
-
 /* Dual Calendar Wrapper */
 .fs-dp-calendars {
   box-sizing: border-box;
@@ -680,7 +988,6 @@
 }
 
 /* || CALENDAR GRID */
-
 /* Day Grid */
 .fs-dp-grid {
   display: grid;
@@ -690,7 +997,7 @@
   text-align: center;
 }
 
-/* Day Name Header */
+/* Day Name */
 .fs-dp-day-name {
   color: var(--fs-text-muted);
   font-size: 0.7rem;
@@ -732,27 +1039,26 @@
 
 /* Calendar Cell - Range Start */
 .fs-dp-cell--start {
-  background: var(--fs-accent) !important; /* Range state */
+  background: var(--fs-accent) !important; /* Range selection state */
   border-radius: var(--fs-radius) 0 0 var(--fs-radius);
   color: var(--fs-accent-text);
 }
 
 /* Calendar Cell - Range End */
 .fs-dp-cell--end {
-  background: var(--fs-accent) !important; /* Range state */
+  background: var(--fs-accent) !important; /* Range selection state */
   border-radius: 0 var(--fs-radius) var(--fs-radius) 0;
   color: var(--fs-accent-text);
 }
 
-/* Calendar Cell - Single Day Selected */
+/* Calendar Cell - Single Day */
 .fs-dp-cell--single {
-  background: var(--fs-accent) !important; /* Range state */
+  background: var(--fs-accent) !important; /* Range selection state */
   border-radius: var(--fs-radius);
   color: var(--fs-accent-text);
 }
 
 /* || HOUR SELECTORS */
-
 /* Hour Row */
 .fs-dp-hours {
   border-top: 1px solid var(--fs-border);
@@ -795,9 +1101,8 @@
   outline: none;
 }
 
-/* || DATE PICKER FOOTER */
-
-/* Footer Row */
+/* || FOOTER */
+/* Date Picker Footer */
 .fs-dp-footer {
   border-top: 1px solid var(--fs-border);
   box-sizing: border-box;
@@ -845,13 +1150,12 @@
 }
 
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
 🟧  9 - EVENT CARDS  🟧
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 
 /* || CARD LIST */
-
-/* Event List Container */
+/* Event List */
 .fs-evt-list {
   display: flex;
   flex-direction: column;
@@ -881,7 +1185,6 @@
 }
 
 /* || CARD IMAGE */
-
 /* Card Image Panel */
 .fs-evt-card__img {
   background-color: var(--fs-border);
@@ -902,7 +1205,6 @@
 }
 
 /* || CARD BODY */
-
 /* Card Body */
 .fs-evt-card__body {
   box-sizing: border-box;
@@ -914,7 +1216,6 @@
 }
 
 /* || CARD META */
-
 /* Meta Row */
 .fs-evt-card__meta {
   align-items: center;
@@ -940,7 +1241,7 @@
 
 /* Meta Time - Before Separator */
 .fs-evt-card__time::before {
-  content: "·";
+  content: "\00b7";
   margin-right: 8px;
   opacity: 0.4;
 }
@@ -954,13 +1255,12 @@
 
 /* Meta Location - Before Separator */
 .fs-evt-card__loc::before {
-  content: "·";
+  content: "\00b7";
   margin-right: 8px;
   opacity: 0.4;
 }
 
 /* || CARD CONTENT */
-
 /* Card Title */
 .fs-evt-card__title {
   font-family: var(--heading);
@@ -980,8 +1280,7 @@
 }
 
 /* || CARD BADGES */
-
-/* Event Badge (category / on image) */
+/* Event Badge (category over image) */
 .fs-evt-badge {
   backdrop-filter: blur(4px);
   background: rgba(255, 255, 255, 0.2);
@@ -995,7 +1294,7 @@
   text-transform: var(--transform);
 }
 
-/* Tag Badge (below card title) */
+/* Tag Badges Row */
 .fs-evt-card__tags {
   display: flex;
   flex-wrap: wrap;
@@ -1003,7 +1302,7 @@
   margin-top: 4px;
 }
 
-/* Tag Badge Item */
+/* Tag Badge */
 .fs-evt-badge--tag {
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -1017,8 +1316,7 @@
 }
 
 /* || CARD CTA */
-
-/* CTA Link */
+/* CTA */
 .fs-evt-card__cta {
   color: var(--fs-accent);
   font-size: var(--fs-font-size);
@@ -1028,13 +1326,12 @@
   transition: var(--transition);
 }
 
-/* CTA Link - Hover (via parent) */
+/* CTA - Hover */
 .fs-evt-card:hover .fs-evt-card__cta {
   opacity: 0.75;
 }
 
 /* || NO RESULTS */
-
 /* No Results Block */
 .fs-no-results {
   box-sizing: border-box;
@@ -1059,15 +1356,15 @@
 }
 
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
 🟧  10 - ANIMATIONS  🟧
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 
-/* Slide Down - Dropdown & Panels */
+/* Slide Down */
 @keyframes fs-slideDown {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
 
   to {
@@ -1077,48 +1374,75 @@
 }
 
 
-/* ════════════════════════════════════════
+/* ══════════════════════════════════════
 🟧  11 - MOBILE  🟧
-════════════════════════════════════════ */
+══════════════════════════════════════ */
 
-/* || FILTER BAR - TABLET & BELOW */
-
+/* || TABLET & BELOW */
 @media screen and (max-width: 1024px) {
-  .custom-dropdown {
-    margin-left: auto;
-    margin-right: auto;
+
+  /* Basic Grid - 2 Columns */
+  .fs-blog-grid[data-layout="basic-grid"] {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .dropdown-options {
-    z-index: 2000;
+  /* Masonry - 2 Columns */
+  .fs-blog-grid[data-layout="masonry"] {
+    column-count: 2;
   }
 }
 
-/* || FILTER BAR - MOBILE */
-
+/* || MOBILE */
 @media screen and (max-width: 767px) {
 
-  /* Blog Sort Full Width */
-  .custom-dropdown {
+  /* Bar - Stack Vertically */
+  .fs-bar-inner,
+  .fs-filter-bar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Search Full Width */
+  .fs-bar-search-wrap {
     width: 100%;
   }
 
-  /* Events Filter Bar - Stack */
-  .fs-filter-bar {
-    align-items: stretch;
-    border-radius: var(--fs-radius);
-    flex-direction: column;
-    gap: 14px;
-    padding: 16px;
+  /* Sort Full Width */
+  .fs-bar-sort {
+    width: 100%;
   }
 
-  /* Events Filter Left - Space Between */
+  /* Dropdowns Full Width */
+  .fs-dropdown {
+    width: 100%;
+  }
+
+  /* Dropdown Trigger Full Width */
+  .fs-dd-trigger {
+    width: 100%;
+  }
+
+  /* Dropdown Panel Full Width */
+  .fs-dd-panel {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  /* Reset Left Align */
+  .fs-bar-reset,
+  .fs-reset-btn {
+    padding-left: 0;
+    text-align: left;
+  }
+
+  /* Events Filter Right - Stack */
   .fs-filter-left {
     justify-content: space-between;
     width: 100%;
   }
 
-  /* Events Filter Right - Stack Full Width */
   .fs-filter-right {
     align-items: stretch;
     flex-direction: column;
@@ -1126,85 +1450,93 @@
     width: 100%;
   }
 
-  /* Events Dropdown Full Width */
-  .fs-dropdown {
+  /* || BLOG CARD LAYOUTS MOBILE */
+  /* Basic Grid - 1 Column */
+  .fs-blog-grid[data-layout="basic-grid"] {
+    grid-template-columns: 1fr;
+  }
+
+  /* Masonry - 1 Column */
+  .fs-blog-grid[data-layout="masonry"] {
+    column-count: 1;
+  }
+
+  /* Side-by-Side - Stack */
+  .fs-blog-card--side-by-side .fs-blog-card__link,
+  .fs-blog-card--alternating .fs-blog-card__link,
+  .fs-blog-card--alternating:nth-child(even) .fs-blog-card__link {
+    flex-direction: column;
+  }
+
+  /* Side-by-Side Image Full Width */
+  .fs-blog-card--side-by-side .fs-blog-card__img,
+  .fs-blog-card--alternating .fs-blog-card__img {
+    height: 220px;
     width: 100%;
   }
 
-  /* Events Dropdown Trigger Full Width */
-  .fs-dd-trigger {
-    width: 100%;
+  /* Hero Card - Shorter on Mobile */
+  .fs-blog-card--hero .fs-blog-card__img {
+    height: 320px;
   }
 
-  /* Events Dropdown Panel Full Width */
-  .fs-dd-panel {
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
-
-  /* Reset Button Left Align */
-  .fs-reset-btn {
-    padding-left: 0;
-    text-align: left;
+  .fs-blog-card--hero .fs-blog-card__body {
+    padding: 40px 24px 28px;
   }
 
   /* || DATE PICKER MOBILE */
-
-  /* Date Picker Panel Full Width */
+  /* Date Picker - Bottom Sheet */
   .fs-dp-panel {
-    left: 0;
-    min-width: 0;
-    position: fixed;
-    right: 0;
-    top: auto;
-    bottom: 0;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     border-radius: var(--fs-radius) var(--fs-radius) 0 0;
+    bottom: 0;
+    left: 0;
     max-height: 90vh;
+    min-width: 0;
     overflow-y: auto;
+    position: fixed;
+    right: 0;
+    top: auto;
     z-index: 800;
   }
 
-  /* Calendars - Single Column on Mobile */
+  /* Calendars - Single Column */
   .fs-dp-calendars {
     flex-direction: column;
     gap: 20px;
     padding: 16px;
   }
 
-  /* Hide Right Calendar on Mobile */
+  /* Hide Right Calendar */
   #fs-dp-cal-right {
     display: none;
   }
 
-  /* Presets - Horizontal Scroll on Mobile */
+  /* Presets - Horizontal Scroll */
   .fs-dp-presets {
     flex-wrap: nowrap;
     overflow-x: auto;
     padding: 10px 12px;
   }
 
-  /* Preset Button - No Shrink on Mobile */
   .fs-dp-preset {
     flex-shrink: 0;
   }
 
-  /* Hour Row - Stack on Mobile */
+  /* Hours - Stack */
   .fs-dp-hours {
     flex-direction: column;
     gap: 10px;
   }
 
   /* || EVENT CARDS MOBILE */
-
-  /* Event Card - Stack on Mobile */
+  /* Event Card - Stack */
   .fs-evt-card__inner {
     flex-direction: column;
   }
 
-  /* Card Image - Full Width on Mobile */
+  /* Event Card Image Full Width */
   .fs-evt-card__img {
     height: 200px;
     width: 100%;
