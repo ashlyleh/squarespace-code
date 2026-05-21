@@ -1,5 +1,5 @@
 /*!
- * filter-sort.js  v2.0
+ * filter-sort.js  v2.1
  * Unified blog filter + events filter for Squarespace 7.1 (Fluid Engine)
  * https://github.com/ashlyleh/squarespace-code
  *
@@ -192,36 +192,50 @@
   function initBlog() {
     /* Guard against double execution */
     if (blogInitDone) return;
-    blogInitDone = true;
 
-    /* ── Find or create mount point ── */
-    var mount      = qs('#' + cfg.blogMountId);
-    var nativeGrid = qs(BLOG_GRID_SEL);
+    /* ── Wait for the native grid via MutationObserver ── */
+    /* Squarespace dynamically renders the blog section after DOMContentLoaded.
+       We watch the DOM until the grid appears, then take it over. */
+    function tryMount() {
+      var nativeGrid = qs(BLOG_GRID_SEL);
+      if (!nativeGrid) return false;
 
-    if (!mount && !nativeGrid && !cfg.blogUrl) return;
+      /* Found it — stop observing and take over */
+      blogInitDone = true;
 
-    /* If no explicit mount div, create one and insert before the native grid */
-    if (!mount) {
-      mount = document.createElement('div');
+      /* Create mount div and insert before the native grid */
+      var mount = document.createElement('div');
       mount.id = cfg.blogMountId;
-      if (nativeGrid) {
-        nativeGrid.parentNode.insertBefore(mount, nativeGrid);
-      } else {
-        document.body.appendChild(mount);
-      }
-    }
+      nativeGrid.parentNode.insertBefore(mount, nativeGrid);
 
-    /* Hide the native Squarespace blog grid */
-    if (nativeGrid) {
+      /* Hide the native grid */
       nativeGrid.style.setProperty('display', 'none', 'important');
+
+      /* Apply width mode */
+      mount.classList.add('fs-blog-app');
+      mount.classList.add(cfg.blogWidth === 'full' ? 'fs-blog-app--full' : 'fs-blog-app--inset');
+
+      /* Derive blog URL from current path if not set */
+      var blogUrl = cfg.blogUrl || window.location.pathname.split('?')[0];
+
+      runBlog(mount, blogUrl);
+      return true;
     }
 
-    /* Apply width mode */
-    mount.classList.add('fs-blog-app');
-    mount.classList.add(cfg.blogWidth === 'full' ? 'fs-blog-app--full' : 'fs-blog-app--inset');
+    /* Try immediately in case grid is already in DOM */
+    if (tryMount()) return;
 
-    /* Derive blog URL from current path if not set */
-    var blogUrl = cfg.blogUrl || window.location.pathname.split('?')[0];
+    /* Otherwise watch for it */
+    var observer = new MutationObserver(function () {
+      if (tryMount()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    /* Safety timeout — stop watching after 10s */
+    setTimeout(function () { observer.disconnect(); }, 10000);
+  }
+
+  function runBlog(mount, blogUrl) {
 
     /* State */
     var posts      = [];
