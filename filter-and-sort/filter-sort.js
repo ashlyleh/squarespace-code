@@ -9,13 +9,14 @@
  * window.filterSortConfig = {
  *
  *   // ── BLOG ──────────────────────────────────────────────────────────────
- *   blogMountId:      'blog-filter-app',   // ID of your placeholder <div>
- *   blogUrl:          '/blog',             // path to your blog page
+ *   blogUrl:          '/blog',             // path to your blog page (auto-detected if omitted)
  *
  *   // Layout: 'basic-grid' | 'masonry' | 'single-column' | 'side-by-side' | 'alternating'
  *   blogLayout:       'basic-grid',
  *   // Set true to use the editorial newsroom style (large hero first card)
  *   blogNewsroom:     false,
+ *   // Width: 'inset' matches Squarespace site max-width, 'full' is edge to edge
+ *   blogWidth:        'inset',
  *
  *   blogBatchSize:    30,
  *
@@ -77,6 +78,7 @@
     blogLayout:        'basic-grid',
     blogNewsroom:      false,
     blogBatchSize:     30,
+    blogWidth:         'inset',            /* 'inset' | 'full' */
     blogShowSearch:    true,
     blogShowCategory:  true,
     blogShowTag:       true,
@@ -164,8 +166,19 @@
   /* ─────────────────────────────────────────────────────────────────────────
      CONTEXT DETECTION
   ───────────────────────────────────────────────────────────────────────── */
+
+  /* Native blog grid selectors Squarespace uses across all layout types */
+  var BLOG_GRID_SEL = [
+    '.blog-basic-grid',
+    '.blog-masonry-wrapper',
+    '.blog-masonry',
+    '.blog-side-by-side',
+    '.blog-alternating-side-by-side',
+    '.collection-content-wrapper',
+  ].join(',');
+
   ready(function () {
-    if (qs('#' + cfg.blogMountId) || cfg.blogUrl) initBlog();
+    if (qs('#' + cfg.blogMountId) || cfg.blogUrl || qs(BLOG_GRID_SEL)) initBlog();
     if (qs('.archive-group-list'))                 initArchive();
     if (qs('#' + cfg.eventsContainerId) || qs('.eventlist')) initEvents();
   });
@@ -175,8 +188,31 @@
      1 — BLOG FILTER
   ═════════════════════════════════════════════════════════════════════════ */
   function initBlog() {
-    var mount = qs('#' + cfg.blogMountId);
-    if (!mount) return;
+    /* ── Find or create mount point ── */
+    var mount      = qs('#' + cfg.blogMountId);
+    var nativeGrid = qs(BLOG_GRID_SEL);
+
+    if (!mount && !nativeGrid && !cfg.blogUrl) return;
+
+    /* If no explicit mount div, create one and insert before the native grid */
+    if (!mount) {
+      mount = document.createElement('div');
+      mount.id = cfg.blogMountId;
+      if (nativeGrid) {
+        nativeGrid.parentNode.insertBefore(mount, nativeGrid);
+      } else {
+        document.body.appendChild(mount);
+      }
+    }
+
+    /* Hide the native Squarespace blog grid */
+    if (nativeGrid) {
+      nativeGrid.style.setProperty('display', 'none', 'important');
+    }
+
+    /* Apply width mode */
+    mount.classList.add('fs-blog-app');
+    mount.classList.add(cfg.blogWidth === 'full' ? 'fs-blog-app--full' : 'fs-blog-app--inset');
 
     /* Derive blog URL from current path if not set */
     var blogUrl = cfg.blogUrl || window.location.pathname.split('?')[0];
