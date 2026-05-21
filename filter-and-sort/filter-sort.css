@@ -68,8 +68,8 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 8px 14px;
   width: 100%;
 }
 
@@ -426,11 +426,11 @@
   padding-right: var(--sqs-site-gutter, 4vw);
 }
 
-/* Full Width - Edge to Edge */
+/* Full Width - Edge to Edge with Site Gutters */
 .fs-blog-app--full {
   max-width: 100%;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: var(--sqs-site-gutter, 4vw);
+  padding-right: var(--sqs-site-gutter, 4vw);
 }
 
 /* || GRID CONTAINER */
@@ -496,15 +496,6 @@
   box-sizing: border-box;
 }
 
-/* Card Meta Row */
-.fs-blog-card__meta {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
 /* Card Date */
 .fs-blog-card__date {
   color: var(--fs-text-muted);
@@ -544,6 +535,68 @@
   opacity: 0.75;
 }
 
+/* || META POSITION ROWS */
+
+/* Meta Row - Any Position */
+.fs-blog-card__meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+/* Meta Row - Above Title */
+.fs-blog-card__meta--above-title {
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+/* Meta Row - Below Title */
+.fs-blog-card__meta--below-title {
+  margin-bottom: 8px;
+  margin-top: 4px;
+}
+
+/* Meta Row - Below Excerpt */
+.fs-blog-card__meta--below-excerpt {
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+/* Meta Row - Below Read More */
+.fs-blog-card__meta--below-read-more {
+  border-top: 1px solid var(--fs-border);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+/* Read Time */
+.fs-blog-card__readtime {
+  color: var(--fs-text-muted);
+  font-size: var(--fs-font-size);
+  opacity: 0.6;
+}
+
+/* Tag in meta */
+.fs-blog-card__tag {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--fs-radius-pill);
+  color: var(--fs-text-muted);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+}
+
+/* Category badges in body positions */
+.fs-blog-card__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* || CARD CTA */
+
 /* Card CTA */
 .fs-blog-card__cta {
   color: var(--fs-accent);
@@ -563,8 +616,8 @@
 /* Basic Grid Container */
 .fs-blog-grid[data-layout="basic-grid"] {
   display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(3, 1fr);
+  gap: var(--fs-blog-gap, 24px);
+  grid-template-columns: repeat(var(--fs-blog-cols, 3), 1fr);
 }
 
 /* Basic Grid Card */
@@ -649,8 +702,8 @@
 
 /* Masonry Grid Container */
 .fs-blog-grid[data-layout="masonry"] {
-  column-count: 3;
-  column-gap: 24px;
+  column-count: var(--fs-blog-cols, 3);
+  column-gap: var(--fs-blog-gap, 24px);
 }
 
 /* Masonry Card */
@@ -687,7 +740,7 @@
 .fs-blog-grid[data-layout="single-column"] {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--fs-blog-gap, 32px);
   margin: 0 auto;
   max-width: 720px;
 }
@@ -712,7 +765,7 @@
 .fs-blog-grid[data-layout="side-by-side"] {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--fs-blog-gap, 2px);
 }
 
 /* Side-by-Side Card */
@@ -745,7 +798,7 @@
 .fs-blog-grid[data-layout="alternating"] {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--fs-blog-gap, 2px);
 }
 
 /* Alternating Card */
@@ -1447,14 +1500,14 @@
 
 @media screen and (max-width: 1024px) {
 
-  /* Basic Grid - 2 Columns */
+  /* Basic Grid - 2 Columns on Tablet */
   .fs-blog-grid[data-layout="basic-grid"] {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(min(2, var(--fs-blog-cols, 3)), 1fr);
   }
 
-  /* Masonry - 2 Columns */
+  /* Masonry - 2 Columns on Tablet */
   .fs-blog-grid[data-layout="masonry"] {
-    column-count: 2;
+    column-count: min(2, var(--fs-blog-cols, 3));
   }
 }
 
@@ -1467,7 +1520,8 @@
   .fs-filter-bar {
     align-items: stretch;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
+    padding: 10px 14px;
   }
 
   /* Search Full Width */
@@ -1519,12 +1573,12 @@
 
   /* || BLOG CARD LAYOUTS MOBILE */
 
-  /* Basic Grid - 1 Column */
+  /* Basic Grid - 1 Column on Mobile */
   .fs-blog-grid[data-layout="basic-grid"] {
     grid-template-columns: 1fr;
   }
 
-  /* Masonry - 1 Column */
+  /* Masonry - 1 Column on Mobile */
   .fs-blog-grid[data-layout="masonry"] {
     column-count: 1;
   }
