@@ -5,9 +5,9 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  1 - PER-SITE OVERRIDES  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 /*
  * Copy this :root block into each site's CSS editor and adjust.
  * These are the only values you should change per site.
@@ -45,11 +45,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  2 - FILTER BAR (SHARED)  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || BAR WRAPPER */
+
 /* Blog Bar Container */
 .fs-blog-bar {
   box-sizing: border-box;
@@ -73,6 +74,7 @@
 }
 
 /* || SEARCH INPUT */
+
 /* Search Wrap */
 .fs-bar-search-wrap {
   align-items: center;
@@ -101,6 +103,7 @@
 }
 
 /* || SORT SELECT */
+
 /* Sort Dropdown */
 .fs-bar-sort {
   appearance: none;
@@ -127,6 +130,7 @@
 }
 
 /* || RESET BUTTON */
+
 /* Reset Button */
 .fs-bar-reset {
   background: transparent;
@@ -152,11 +156,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  3 - MULTISELECT DROPDOWN (BLOG)  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || DROPDOWN CONTAINER */
+
 /* Blog Dropdown */
 .fs-dropdown {
   flex: 0 0 auto;
@@ -193,6 +198,7 @@
 }
 
 /* || CHEVRON */
+
 /* Chevron Icon */
 .fs-chevron {
   flex-shrink: 0;
@@ -208,6 +214,7 @@
 }
 
 /* || DROPDOWN PANEL */
+
 /* Dropdown Panel */
 .fs-dd-panel {
   animation: fs-slideDown 0.2s ease;
@@ -231,6 +238,7 @@
 }
 
 /* || DROPDOWN OPTIONS */
+
 /* Dropdown Option - Blog (multiselect, no checkboxes) */
 .fs-dd-opt {
   color: var(--fs-text);
@@ -286,11 +294,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  4 - ARCHIVE BLOCK  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || ARCHIVE DROPDOWN */
+
 /* Archive Toggle Label */
 .archive-dropdown-toggle-label {
   align-items: center;
@@ -332,6 +341,7 @@
 }
 
 /* || ARCHIVE LINKS */
+
 /* Archive Link */
 .archive-group-name-link {
   display: block;
@@ -353,11 +363,12 @@
 }
 
 
-/* ══════════════════════════════════════
-🟧  5 - SEARCH BAR (SQUARESPACE)  🟧
-══════════════════════════════════════ */
+/* ════════════════════════════════════════
+🟧  5 - SEARCH BAR (SQUARESPACE NATIVE)  🟧
+════════════════════════════════════════ */
 
 /* || SEARCH WRAPPER */
+
 /* Search Wrapper */
 .sqs-search-ui-button-wrapper {
   background: var(--fs-bg);
@@ -374,6 +385,7 @@
 }
 
 /* || SEARCH INPUT */
+
 /* Search Input */
 .sqs-search-ui-button-wrapper .search-input {
   background-color: transparent;
@@ -393,17 +405,19 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  6 - BLOG CARD LAYOUTS  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || GRID CONTAINER */
+
 /* Blog Grid */
 .fs-blog-grid {
   width: 100%;
 }
 
 /* || SHARED CARD BASE */
+
 /* Blog Card Base */
 .fs-blog-card {
   box-sizing: border-box;
@@ -419,6 +433,7 @@
 }
 
 /* || CARD IMAGE */
+
 /* Card Image Container */
 .fs-blog-card__img {
   background-color: var(--fs-border);
@@ -451,6 +466,7 @@
 }
 
 /* || CARD BODY */
+
 /* Card Body */
 .fs-blog-card__body {
   box-sizing: border-box;
@@ -519,6 +535,7 @@
 }
 
 /* || BASIC GRID LAYOUT */
+
 /* Basic Grid Container */
 .fs-blog-grid[data-layout="basic-grid"] {
   display: grid;
@@ -550,6 +567,7 @@
 }
 
 /* || NEWSROOM HERO (basic-grid first card when blogNewsroom: true) */
+
 /* Hero Card */
 .fs-blog-card--hero {
   border: 1px solid var(--fs-border);
@@ -604,6 +622,7 @@
 }
 
 /* || MASONRY LAYOUT */
+
 /* Masonry Grid Container */
 .fs-blog-grid[data-layout="masonry"] {
   column-count: 3;
@@ -639,6 +658,7 @@
 }
 
 /* || SINGLE COLUMN LAYOUT */
+
 /* Single Column Container */
 .fs-blog-grid[data-layout="single-column"] {
   display: flex;
@@ -663,6 +683,7 @@
 }
 
 /* || SIDE BY SIDE LAYOUT */
+
 /* Side-by-Side Container */
 .fs-blog-grid[data-layout="side-by-side"] {
   display: flex;
@@ -733,6 +754,7 @@
 }
 
 /* || NO RESULTS */
+
 /* Blog No Results */
 .fs-blog-no-results {
   color: var(--fs-text-muted);
@@ -745,6 +767,7 @@
 }
 
 /* || LOAD MORE BUTTON */
+
 /* Load More */
 .fs-blog-load-more {
   background: transparent;
@@ -767,11 +790,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  7 - EVENTS FILTER BAR  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || FILTER BAR */
+
 /* Events App Container */
 #fs-evt-app {
   box-sizing: border-box;
@@ -809,6 +833,7 @@
 }
 
 /* || UPCOMING / PAST TOGGLE */
+
 /* Toggle Wrapper */
 .fs-toggle {
   background: rgba(0, 0, 0, 0.04);
@@ -840,6 +865,7 @@
 }
 
 /* || EVENT COUNT */
+
 /* Event Count */
 .fs-count {
   color: var(--fs-text-muted);
@@ -850,6 +876,7 @@
 }
 
 /* || RESET BUTTON */
+
 /* Events Reset Button */
 .fs-reset-btn {
   background: transparent;
@@ -870,11 +897,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  8 - DATE PICKER  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || DATE DROPDOWN */
+
 /* Date Dropdown - Wider */
 .fs-dropdown--date {
   min-width: 150px;
@@ -901,6 +929,7 @@
 }
 
 /* || PRESETS */
+
 /* Presets Row */
 .fs-dp-presets {
   border-bottom: 1px solid var(--fs-border);
@@ -942,6 +971,7 @@
 }
 
 /* || CALENDARS */
+
 /* Dual Calendar Wrapper */
 .fs-dp-calendars {
   box-sizing: border-box;
@@ -988,6 +1018,7 @@
 }
 
 /* || CALENDAR GRID */
+
 /* Day Grid */
 .fs-dp-grid {
   display: grid;
@@ -1059,6 +1090,7 @@
 }
 
 /* || HOUR SELECTORS */
+
 /* Hour Row */
 .fs-dp-hours {
   border-top: 1px solid var(--fs-border);
@@ -1102,6 +1134,7 @@
 }
 
 /* || FOOTER */
+
 /* Date Picker Footer */
 .fs-dp-footer {
   border-top: 1px solid var(--fs-border);
@@ -1150,11 +1183,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  9 - EVENT CARDS  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || CARD LIST */
+
 /* Event List */
 .fs-evt-list {
   display: flex;
@@ -1185,6 +1219,7 @@
 }
 
 /* || CARD IMAGE */
+
 /* Card Image Panel */
 .fs-evt-card__img {
   background-color: var(--fs-border);
@@ -1205,6 +1240,7 @@
 }
 
 /* || CARD BODY */
+
 /* Card Body */
 .fs-evt-card__body {
   box-sizing: border-box;
@@ -1216,6 +1252,7 @@
 }
 
 /* || CARD META */
+
 /* Meta Row */
 .fs-evt-card__meta {
   align-items: center;
@@ -1261,6 +1298,7 @@
 }
 
 /* || CARD CONTENT */
+
 /* Card Title */
 .fs-evt-card__title {
   font-family: var(--heading);
@@ -1280,6 +1318,7 @@
 }
 
 /* || CARD BADGES */
+
 /* Event Badge (category over image) */
 .fs-evt-badge {
   backdrop-filter: blur(4px);
@@ -1316,6 +1355,7 @@
 }
 
 /* || CARD CTA */
+
 /* CTA */
 .fs-evt-card__cta {
   color: var(--fs-accent);
@@ -1332,6 +1372,7 @@
 }
 
 /* || NO RESULTS */
+
 /* No Results Block */
 .fs-no-results {
   box-sizing: border-box;
@@ -1356,9 +1397,9 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  10 - ANIMATIONS  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* Slide Down */
 @keyframes fs-slideDown {
@@ -1374,11 +1415,12 @@
 }
 
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
 🟧  11 - MOBILE  🟧
-══════════════════════════════════════ */
+════════════════════════════════════════ */
 
 /* || TABLET & BELOW */
+
 @media screen and (max-width: 1024px) {
 
   /* Basic Grid - 2 Columns */
@@ -1393,6 +1435,7 @@
 }
 
 /* || MOBILE */
+
 @media screen and (max-width: 767px) {
 
   /* Bar - Stack Vertically */
@@ -1451,6 +1494,7 @@
   }
 
   /* || BLOG CARD LAYOUTS MOBILE */
+
   /* Basic Grid - 1 Column */
   .fs-blog-grid[data-layout="basic-grid"] {
     grid-template-columns: 1fr;
@@ -1485,6 +1529,7 @@
   }
 
   /* || DATE PICKER MOBILE */
+
   /* Date Picker - Bottom Sheet */
   .fs-dp-panel {
     border-bottom-left-radius: 0;
@@ -1531,6 +1576,7 @@
   }
 
   /* || EVENT CARDS MOBILE */
+
   /* Event Card - Stack */
   .fs-evt-card__inner {
     flex-direction: column;
