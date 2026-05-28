@@ -9,11 +9,8 @@
 
 (function () {
   if (!window.location.pathname.startsWith('/config')) return;
-  if (document.getElementById('ccv-widget')) return;
 
   // ── Config ─────────────────────────────────────────────────────────────────
-
-  var SCRIPT_URL = 'https://cdn.jsdelivr.net/gh/ashlyleh/squarespace-code@main/css-var-toolbar.js';
 
   var COLORS = [
     { label: 'Background',       cssVar: '--background-color',    hslVar: '--white-hsl' },
@@ -68,8 +65,7 @@
     'position:fixed', 'bottom:28px', 'left:50%',
     'transform:translateX(-50%) translateY(10px)',
     'background:#1a1a1a', 'color:#fff',
-    'padding:6px 16px', 'border-radius:20px',
-    'font-size:11.5px',
+    'padding:6px 16px', 'border-radius:20px', 'font-size:11.5px',
     'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
     'opacity:0', 'transition:opacity 0.18s,transform 0.18s',
     'z-index:100001', 'pointer-events:none', 'letter-spacing:0.02em',
@@ -130,29 +126,21 @@
   function makeSection(titleText, contentEl) {
     var wrap = document.createElement('div');
     wrap.style.cssText = 'border-bottom:1px solid #ebebeb;';
-
     var header = document.createElement('div');
     header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:10px 0;user-select:none;';
-
     var title = document.createElement('span');
     title.textContent = titleText;
     title.style.cssText = 'font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
-
     var chev = chevronSVG();
-    header.appendChild(title);
-    header.appendChild(chev);
-
+    header.appendChild(title); header.appendChild(chev);
     contentEl.style.paddingBottom = '12px';
     var open = true;
-
     header.addEventListener('click', function () {
       open = !open;
       contentEl.style.display = open ? '' : 'none';
       chev.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
     });
-
-    wrap.appendChild(header);
-    wrap.appendChild(contentEl);
+    wrap.appendChild(header); wrap.appendChild(contentEl);
     return wrap;
   }
 
@@ -161,11 +149,9 @@
   function makeColorContent() {
     var row = document.createElement('div');
     row.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;';
-
     COLORS.forEach(function (c) {
       var hslVal = swatchColors[c.hslVar];
       var bg = hslVal ? 'hsla(' + hslVal + ',1)' : '#eee';
-
       var swatch = document.createElement('button');
       swatch.title = 'Click to copy: var(' + c.cssVar + ')';
       swatch.style.cssText = [
@@ -180,7 +166,6 @@
       swatch.addEventListener('click', function (e) { e.preventDefault(); copyText('var(' + c.cssVar + ')', swatch); });
       row.appendChild(swatch);
     });
-
     return row;
   }
 
@@ -192,10 +177,9 @@
     btn.style.cssText = [
       'display:inline-flex', 'align-items:center',
       'background:#fff', 'border:1.5px solid #ddd', 'border-radius:8px',
-      'padding:6px 14px', 'cursor:pointer',
-      'font-size:10px', 'font-weight:600', 'letter-spacing:0.06em',
-      'text-transform:uppercase', 'color:#333',
-      'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
+      'padding:6px 14px', 'cursor:pointer', 'font-size:10px',
+      'font-weight:600', 'letter-spacing:0.06em', 'text-transform:uppercase',
+      'color:#333', 'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
       'transition:background 0.12s,border-color 0.12s',
       'outline:2px solid transparent', 'outline-offset:2px', 'white-space:nowrap',
     ].join(';');
@@ -232,44 +216,6 @@
     return wrap;
   }
 
-  // ── Bookmarklet banner ─────────────────────────────────────────────────────
-
-  function makeBookmarkletBanner() {
-    var bookmarkletCode = "javascript:(function(){var s=document.createElement('script');s.src='" + SCRIPT_URL + "?v='+Date.now();document.head.appendChild(s);})();";
-
-    var wrap = document.createElement('div');
-    wrap.style.cssText = [
-      'display:flex', 'align-items:center', 'justify-content:space-between',
-      'background:#fffbf0', 'border:1px solid #f0dfa0', 'border-radius:8px',
-      'padding:7px 10px', 'margin-bottom:2px', 'gap:8px',
-    ].join(';');
-
-    var left = document.createElement('div');
-    left.style.cssText = 'display:flex;flex-direction:column;gap:1px;';
-    var t = document.createElement('span');
-    t.textContent = '\uD83D\uDD16 CSS Var Toolbar';
-    t.style.cssText = 'font-size:10px;font-weight:700;color:#333;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
-    var h = document.createElement('span');
-    h.textContent = 'Drag \u2192 to your bookmarks bar';
-    h.style.cssText = 'font-size:9px;color:#aaa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
-    left.appendChild(t); left.appendChild(h);
-    wrap.appendChild(left);
-
-    var link = document.createElement('a');
-    link.href = bookmarkletCode;
-    link.textContent = '\uD83C\uDFA8 CSS Vars';
-    link.title = 'Drag this to your bookmarks bar';
-    link.style.cssText = [
-      'background:#fff', 'border:1.5px dashed #c0a830', 'border-radius:7px',
-      'padding:4px 10px', 'font-size:10px', 'font-weight:600', 'color:#7a6010',
-      'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',
-      'text-decoration:none', 'white-space:nowrap', 'cursor:grab', 'flex-shrink:0',
-    ].join(';');
-    link.addEventListener('click', function (e) { e.preventDefault(); });
-    wrap.appendChild(link);
-    return wrap;
-  }
-
   // ── Build & inject ─────────────────────────────────────────────────────────
 
   function buildWidget() {
@@ -284,7 +230,6 @@
     widget.id = 'ccv-widget';
     widget.style.cssText = 'padding:4px 0 0 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
 
-    widget.appendChild(makeBookmarkletBanner());
     widget.appendChild(makeSection('Colors', makeColorContent()));
     widget.appendChild(makeSection('Fonts', makeFontContent()));
 
